@@ -162,19 +162,27 @@ export class AllergiesAllergyListComponent  implements OnInit {
 
   private initFhirClient() {
     console.log('FHIR client is ready');
-    console.log(this.fhirClient?.patient);
-    if (this.fhirClient?.patient?.id) {
-      this.fhirClient.request(`Patient/${this.fhirClient.patient.id}`)
-        .then(patient => {
-          // Handle the patient data
-          console.log(patient);
-        })
-        .catch(error => {
-          console.error('Failed to fetch patient data', error);
-        });
-    } else {
-      console.error('FHIR client is not initialized or patient data is not available.');
-    }
+    this.fhirClient?.patient.read().then(patient => {
+      // Here you can process patient data or store it
+      console.log("Patient data:", patient);
+      // If you want to store patient data in the service, add a property for it
+      // and update it here.
+    }).catch(error => {
+      console.error("Error fetching patient data:", error);
+    });
+    // console.log(this.fhirClient?.patient);
+    // if (this.fhirClient?.patient?.id) {
+    //   this.fhirClient.request(`Patient/${this.fhirClient.patient.id}`)
+    //     .then(patient => {
+    //       // Handle the patient data
+    //       console.log(patient);
+    //     })
+    //     .catch(error => {
+    //       console.error('Failed to fetch patient data', error);
+    //     });
+    // } else {
+    //   console.error('FHIR client is not initialized or patient data is not available.');
+    // }
   }
 
   onReactionsChange(updatedReactions: any[]) {
