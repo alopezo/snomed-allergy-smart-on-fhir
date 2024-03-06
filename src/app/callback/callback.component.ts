@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -9,29 +9,28 @@ import { AuthService } from '../auth.service';
 })
 export class CallbackComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute // Inject ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    const url = window.location.href;
-    const queryString = url.split('?')[1];
-    if (queryString) {
-      const urlParams = new URLSearchParams(queryString);
-      const code = urlParams.get('code');
-      const state = urlParams.get('state');
-      console.log('Authorization Code:', code);
-      console.log('State:', state);
-      
-      // Proceed with your authorization flow here
-    }
+    // Access query parameters
+    this.route.queryParams.subscribe(params => {
+      console.log('Query Parameters Callback:', params);
+      // Here you could look for specific parameters, e.g., `code` for the authorization code
+      // Example: console.log('Authorization Code:', params['code']);
+    });
 
     this.authService.handleAuth()
       .then(() => {
         console.log('Authentication successful');
-        this.router.navigate(['/']); // Navigate to the main part of the application
+        this.router.navigate(['']); // Navigate to the main part of the application
       })
       .catch(error => {
         console.error('Authentication failed', error);
-        this.router.navigate(['/error']); // Adjust as needed
+        this.router.navigate(['']); // Navigate to an error page or show an error message
       });
   }
 }

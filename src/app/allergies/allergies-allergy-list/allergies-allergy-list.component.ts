@@ -10,6 +10,7 @@ import { SnackAlertComponent } from 'src/app/alerts/snack-alert';
 import * as FHIR from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 import { AuthService } from 'src/app/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-allergies-allergy-list',
@@ -145,6 +146,7 @@ export class AllergiesAllergyListComponent  implements OnInit {
   constructor(private terminologyService: TerminologyService, 
     private clipboard: Clipboard, 
     private authService: AuthService,
+    private route: ActivatedRoute,
     private _snackBar: MatSnackBar) {
       this.authService.getFhirClient().subscribe((client) => {
         if (client) {
@@ -198,6 +200,11 @@ export class AllergiesAllergyListComponent  implements OnInit {
     this.updateAllergyStr();
     // const client = FHIR.client("https://r3.smarthealthit.org");
     // client.request("Patient").then(console.log).catch(console.error);
+    this.route.queryParams.subscribe(params => {
+      console.log('Query Parameters Allergy:', params);
+      // Here you could look for specific parameters, e.g., `code` for the authorization code
+      // Example: console.log('Authorization Code:', params['code']);
+    });
   }
 
   private initFhirClient() {
