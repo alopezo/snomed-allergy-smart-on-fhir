@@ -146,12 +146,51 @@ export class AllergiesAllergyListComponent  implements OnInit {
     private clipboard: Clipboard, 
     private authService: AuthService,
     private _snackBar: MatSnackBar) {
-      this.authService.getFhirClient().pipe(take(1)).subscribe((client) => {
-        if (client) {
-          this.fhirClient = client;
-          this.initFhirClient();
-        }
-      });
+      // this.authService.getFhirClient().pipe(take(1)).subscribe((client) => {
+      //   if (client) {
+      //     this.fhirClient = client;
+      //     this.initFhirClient();
+      //   }
+      // });
+
+      FHIR.oauth2.ready().then(function(client) {
+                
+        // Render the current patient (or any error)
+        client.patient.read().then(
+            function(pt) {
+                console.log('pt', pt);
+            },
+            function(error) {
+                console.error(error.stack);
+            }
+        );
+        
+        // Get MedicationRequests for the selected patient
+        client.request("/MedicationRequest?patient=" + client.patient.id, {
+            resolveReferences: [ "medicationReference" ],
+            graph: true
+        })
+        
+        // Reject if no MedicationRequests are found
+        .then(function(data) {
+            if (!data.entry || !data.entry.length) {
+                throw new Error("No medications found for the selected patient");
+            }
+            return data.entry;
+        })
+        
+
+        // Render the current patient's medications (or any error)
+        .then(
+            function(meds) {
+                console.log('meds', meds);
+            },
+            function(error) {
+                console.error(error.stack);
+            }
+        );
+
+    }).catch(console.error);
     }
 
   ngOnInit(): void {
