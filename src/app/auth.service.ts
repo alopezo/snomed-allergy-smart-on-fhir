@@ -1,6 +1,4 @@
-// auth.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import * as FHIR from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 import { BehaviorSubject } from 'rxjs';
@@ -20,17 +18,12 @@ export class AuthService {
   public handleAuth(): Promise<Client> {
     return FHIR.oauth2.ready().then(client => {
       this.fhirClient.next(client); // Notify subscribers that the client is ready
+      
+      // Extract and log the access token
+      const accessToken = client?.state?.tokenResponse?.access_token;
+      console.log("Access Token:", accessToken);
+
       return client;
     });
   }
-  
-  // Call this method to start the authorization flow
-  public authorize() {
-    FHIR.oauth2.authorize({
-      clientId: "YOUR_CLIENT_ID",
-      scope: "openid fhirUser patient/*.read",
-      redirectUri: window.location.origin + "/callback"
-    });
-  }
-
 }
