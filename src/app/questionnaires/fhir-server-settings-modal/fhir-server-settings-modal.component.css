@@ -1,0 +1,29 @@
+.form-container {
+    margin: auto; /* Centers the form container */
+    padding: 20px; /* Optional padding for aesthetics */
+  }
+  
+  mat-form-field {
+    width: 100%; /* Makes each form field occupy full width */
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Adjusts the space between form fields */
+  }
+  
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end; /* This will align the items to the right */
+    gap: 1rem;
+    margin-right: 2rem;
+    align-items: center;
+  }
+
+  .warning {
+    color: rgb(255, 149, 0);
+    font-weight: lighter;
+    font-style: italic;
+  }

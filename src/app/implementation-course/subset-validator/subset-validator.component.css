@@ -1,0 +1,98 @@
+/* subset-validator.component.css */
+:host {
+    display: block;
+    height: calc(100% - 65px);
+  }
+  
+  .layout-container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .left-column {
+    flex: 0 0 68%; 
+    display: flex;
+    flex-direction: column; 
+    height: 100%;
+  }
+  
+  .right-column {
+    flex: 0 0 28%;
+  }
+
+  .buttons-panel {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .upload-controls, .table-container {
+    width: 100%; /* Take up the whole width of the left column */
+    margin-bottom: 20px; /* Optional: space between the card and table */
+  }
+  
+  /* Optional: Style to ensure the table container has a scrolling capability if content overflows */
+  .table-container {
+    overflow-y: auto;
+  }
+
+  .upload-controls {
+    margin-left: 20px;
+  }
+  
+  /* Ensure the table fills its container */
+  table {
+    width: 100%;
+  }
+
+.validation-result {
+    font-weight: normal;
+    font-size: larger;
+}
+
+.blue-rounded-div {
+    border-radius: 10px;
+    background-color: #4d7fb4;
+    padding-top: .5rem;
+    padding-bottom: 1rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    width: 80%;
+    color: whitesmoke;
+    margin-top: 20px;
+}
+
+.terminal-style {
+    font-family: monospace;
+    font-size: 0.9rem;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 80%;
+}
+
+h4 {
+    margin-top: 10px;
+}
+
+.instructions {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: lighter;
+    font-size: larger;
+}
+
+h3 {
+    margin-top: 10px;
+}
+
+.bg-pink {
+  background-color: pink;
+}
+
+tr.mat-mdc-row:hover {
+  background-color: #aba9a9 !important
+}

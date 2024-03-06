@@ -1,0 +1,76 @@
+<div class="header-container">
+  <h2 class="header">
+    SNOMED CT Terminology Bindings Validator - FHIR Questionnaire Manager
+  </h2>
+
+  <div class="breadcrumb">
+    <span>
+      <a href="javascript:void(0)" (click)="mode = 'step1'">Home</a>
+      <span *ngIf="mode == 'Validator'"> / Validator</span>
+      <span *ngIf="mode == 'Manager'"> / Questionnaires repository</span>
+    </span>
+  </div>
+</div>
+<div *ngIf="mode == 'step1'" id="step1">
+  <p>What do you want to do today?</p>
+  <mat-radio-group aria-label="Select an option" [(ngModel)]="step1Response">
+    <mat-radio-button value="edit">Edit a questionnaire in the NLM Form Builder</mat-radio-button>
+    <mat-radio-button value="example">Load an example questionnaire</mat-radio-button>
+    <mat-radio-button value="validate">Upload and validate a questionnaire</mat-radio-button>
+    <mat-radio-button value="repository">Work with your questionnaires from a FHIR server</mat-radio-button>
+    <span *ngIf="selectedFhirServer && selectedUserTag" id="reconnect">
+      <a href="javascript:void(0)" (click)="mode = 'Manager'" id="reconnect-link">
+        <mat-icon>play_arrow</mat-icon><span>Reconnect to last FHIR Server</span></a>
+      <span class="muted">  ( {{ selectedFhirServer }} as "<i>{{ selectedUserTag }}</i>" )</span>
+    </span>
+
+  </mat-radio-group>
+  <div class="step-button-container">
+    <button mat-flat-button color="accent" (click)="advanceFromStep1()" [disabled]="!step1Response">Next</button>
+  </div>
+</div>
+
+<div *ngIf="mode == 'Manager' || mode == 'Validator'">
+  <div class="button-container bottom-spacer">
+    <span *ngIf="mode == 'Manager'">
+      Connected to <a href="selectedFhirServer">{{ selectedFhirServer }}</a> as "<i>{{ selectedUserTag }}</i>"
+    </span>
+    <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+    <button mat-flat-button color="accent" (click)="fileInput.click()" [disabled]="validating">
+      Upload
+    </button>
+    <button mat-flat-button color="accent" (click)="saveQuestionnaireToDisk()" [disabled]="validating || !questionnaire">Download</button>
+    <button mat-flat-button color="accent" (click)="openModularQuestionnaireModal()" [disabled]="validating" *ngIf="mode == 'Manager'">
+      Create Modular Questionnaire
+    </button>
+  </div>
+
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" (selectedIndexChange)="onTabChange($event)">
+    <mat-tab label="My Questionnaires" *ngIf="mode === 'Manager'">
+      <div class="tab-container">
+        <app-list-questionnaires #questionnairesList [config]="listConfig"
+          (validateQuestionnaire)="switchToValidateTab($event)"
+          (previewQuestionnaire)="switchToPreviewTab($event)"
+          (viewQuestionaireHistory)="switchToHistoryTab($event)">
+        </app-list-questionnaires>
+      </div>
+    </mat-tab>
+    <mat-tab label="Preview">
+      <div class="tab-container">
+        <h4 *ngIf="questionnaire">{{ questionnaire.title }} - Version: {{ questionnaire.meta.versionId }} ({{ questionnaire.meta.lastUpdated | date:'fullDate' }})</h4>
+        <div id="myFormContainer" [class.hidden]="!questionnaire"></div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Validate SNOMED Bindings">
+      <app-validate-questionnaire #validateQuestionnaire [questionnaire]="questionnaire" 
+      (questionnaireUpdated)="loadQuestionnaire($event)" 
+      (validatingQuestionnaire)="validating = $event"></app-validate-questionnaire>
+    </mat-tab>
+    <mat-tab label="History">
+      <app-questionnaire-history #questionnaireHistory [questionnaire]="questionnaire"
+        (previewQuestionnaire)="switchToPreviewTab($event)"
+        (restoreQuestionnaireVersion)="saveQuestionnaire($event)">
+      </app-questionnaire-history>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,0 +1,216 @@
+<div id="main-panel">
+    <h3>Terminology Bindings Sandbox
+        <button mat-icon-button color="primary" [matMenuTriggerFor]="substancePopoverMenu">
+            <mat-icon>info</mat-icon>
+        </button>
+        <mat-menu #substancePopoverMenu="matMenu" >
+            <span mat-menu-item [disableRipple]="true" (click)="$event.stopPropagation()">
+                <h4>Terminology Bindings Sandbox</h4>
+                <p>This is a sandbox for creating terminology bindings, designed to support education activities.</p>
+            </span>
+        </mat-menu>
+    </h3>
+    <div class="action-button">
+        <button mat-flat-button color="accent" (click)="showRightContainer = !showRightContainer" *ngIf="bindings.length">
+            {{ (showRightContainer ? 'Close data panel' : 'Open data panel') }}
+        </button>
+        <input hidden (change)="uploadFile($event)" #fileInput type="file" id="file">
+        <button mat-flat-button color="accent" [matMenuTriggerFor]="demosMenu" *ngIf="bindings.length">
+            Download form
+        </button>
+        <mat-menu #demosMenu="matMenu" class="wide-menu">
+            <button mat-menu-item (click)="saveForm()">Download</button>
+            <button mat-menu-item (click)="saveOutput(fhirQuestionnaireStr)">Download as FHIR Questionnaire</button>
+        </mat-menu>
+
+        <button mat-flat-button color="accent" (click)="fileInput.click()">Upload form</button>
+        <button mat-flat-button color="accent" (click)="loadExample1()">Example</button>
+        <button mat-flat-button color="accent" (click)="clear()">Clear</button>
+    </div>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                       (closed)="panelOpenState = false" class="editPanel" #newPanel>
+        <mat-expansion-panel-header>
+        <mat-panel-title>
+            <h4>New binding:</h4>
+        </mat-panel-title>
+        <mat-panel-description *ngIf="!panelOpenState">
+            Click to add new binding
+        </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div>
+            <form [formGroup]="newBindingForm" class="row">
+                <div class="form-row">
+                    <!-- Column 1 for Questions -->
+                    <div class="form-column">
+                        <h5>Question</h5>
+                        <mat-form-field class="input-field">
+                            <mat-label>Question text</mat-label>
+                            <input matInput type="text" formControlName="title" placeholder="Enter title...">
+                            <button *ngIf="newBindingForm.get('title')?.value" matSuffix mat-icon-button aria-label="Clear" (click)="newBindingForm.get('title')?.reset()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-error>{{ getErrorMessage('title')}}</mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="input-field autocomplete-field">
+                            <!-- <mat-label>Question code</mat-label> -->
+                            <app-autocomplete-binding [binding]="codeBinding" class="grow" formControlName="code"></app-autocomplete-binding>
+                            <a href="javascript:void(0)" class="bottom-right-link" (click)="toggleCodeBinding()">
+                                <span *ngIf="codeBinding === codeBindingAll">Restrict to Observables</span>
+                                <span *ngIf="codeBinding != codeBindingAll">Open to Observables + Findings + Procedures</span>
+                            </a>
+                            <mat-error>{{ getErrorMessage('code')}}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <!-- Column 2 for Answers -->
+                    <div class="form-column">
+                        <h5>Answer</h5>
+                        <mat-form-field class="input-field">
+                            <mat-label>Answer Type</mat-label>
+                            <mat-select formControlName="type">
+                                <mat-option *ngFor="let type of controlTypes" [value]="type">
+                                    {{type}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error>{{ getErrorMessage('type')}}</mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="input-field" *ngIf="newBindingForm.controls.type.value != 'Section header' && newBindingForm.controls.type.value != 'Text box' && newBindingForm.controls.type.value != 'Checkbox' && newBindingForm.controls.type.value != 'Integer' && newBindingForm.controls.type.value != 'Decimal'">
+                            <mat-label>Answer options: ECL Expression</mat-label>
+                            <input matInput type="text" formControlName="ecl" placeholder="Enter ECL...">
+                            <a href="javascript:void(0)" class="top-right-link" (click)="openEclBuilder(newBindingForm.get('ecl')?.value, 'ecl')">ECL Builder</a>
+                            <button *ngIf="newBindingForm.get('ecl')?.value" matSuffix mat-icon-button aria-label="Clear" (click)="newBindingForm.get('ecl')?.reset()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-error>{{ getErrorMessage('ecl')}}</mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="input-field" *ngIf="newBindingForm.controls.type.value == 'Checkbox'">
+                            <!-- <mat-label>Question code</mat-label> -->
+                            <app-autocomplete-binding [binding]="checkboxBinding" class="grow" formControlName="ecl"></app-autocomplete-binding>
+                            <a href="javascript:void(0)" class="bottom-right-link" (click)="toggleCheckboxBinding()">
+                                <span *ngIf="checkboxBinding.ecl === codeBindingAll.ecl">Restrict to Observables</span>
+                                <span *ngIf="checkboxBinding.ecl != codeBindingAll.ecl">Open to Observables + Findings + Procedures</span>
+                            </a>
+                            <mat-error>{{ getErrorMessage('ecl')}}</mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <!-- Full-width Note Field -->
+                <mat-form-field class="input-field full-width" *ngIf="newBindingForm.controls.type.value != 'Section header'">
+                    <mat-label>Note</mat-label>
+                    <input matInput type="text" formControlName="note" placeholder="Enter a description...">
+                    <button *ngIf="newBindingForm.get('note')?.value" matSuffix mat-icon-button aria-label="Clear" (click)="newBindingForm.get('note')?.reset()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error>{{ getErrorMessage('note')}}</mat-error>
+                </mat-form-field>
+            </form>
+            <br>
+            <div class="row">
+                <span class="grow"></span>
+                <button mat-flat-button color="primary" (click)="addBinding()" *ngIf="indexInEdit == -1">Add binding</button>
+                <button mat-flat-button color="primary" (click)="addBinding(); clearOutput();" *ngIf="indexInEdit > -1">Update binding</button>
+                <button mat-flat-button color="primary" (click)="cancelEdit()">Cancel</button>
+            </div>
+        </div>
+    </mat-expansion-panel>
+    <div *ngIf="!titleEditMode" class="compact-row-container">
+        <p class="title">{{formTitle}}</p>
+        <button mat-icon-button color="primary" (click)="titleEditMode = true" class="tool">
+            <mat-icon>edit</mat-icon>
+        </button>
+    </div>
+    <div *ngIf="titleEditMode" class="compact-row-container">
+        <form class="row form-title">
+            <mat-form-field>
+                <mat-label>Title</mat-label>
+                <input matInput type="text" [(ngModel)]="formTitle" placeholder="Enter title..." [ngModelOptions]="{standalone: true}" (ngModelChange)="refreshFhirQuestionnaire()">
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="formTitle = ''">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </form>
+        <button mat-icon-button color="primary" (click)="titleEditMode = false" class="tool">
+            <mat-icon>save</mat-icon>
+        </button>
+    </div>
+    <div class="row-container">
+        <div [@growShrink]="stateName" class="row-container-item">
+            <div cdkDropList (cdkDropListDropped)="onDrop($event)">
+                <div *ngFor="let binding of bindings; let i = index" class="output-panel" cdkDrag>
+                    <div class="row control">
+                        <mat-icon cdkDragHandle class="tool drag-handle">drag_indicator</mat-icon>
+                        <app-autocomplete-binding [binding]="binding" class="grow" *ngIf="binding.type == 'Autocomplete'" (selectionChange)="optionSelected(binding.title, binding.code, $event)"></app-autocomplete-binding>
+                        <app-dropdown-binding [binding]="binding" class="grow" *ngIf="binding.type == 'Select (Single)' || binding.type == 'Select (Multiple)'" (selectionChange)="optionSelected(binding.title, binding.code, $event)"></app-dropdown-binding>
+                        <app-radios-binding [binding]="binding" class="grow" *ngIf="binding.type == 'Options'" (selectionChange)="optionSelected(binding.title, binding.code, $event)"></app-radios-binding>
+                        <span class="title grow" *ngIf="binding.type == 'Section header'">{{ binding.title }}</span>
+                        <app-textbox-binding [binding]="binding" class="grow" *ngIf="binding.type == 'Text box'" (textChange)="optionSelected(binding.title, binding.code, $event)"></app-textbox-binding>
+                        <app-integer-binding [binding]="binding" class="grow" *ngIf="binding.type == 'Integer'" (textChange)="optionSelected(binding.title, binding.code, $event)"></app-integer-binding>
+                        <app-decimal-binding [binding]="binding" class="grow" *ngIf="binding.type == 'Decimal'" (textChange)="optionSelected(binding.title, binding.code, $event)"></app-decimal-binding>
+                        <app-checkbox-binding [binding]="binding" class="grow" *ngIf="binding.type == 'Checkbox'" (selectionChange)="optionSelected(binding.title, binding.code, $event)"></app-checkbox-binding>
+                        <button mat-icon-button color="primary" [matMenuTriggerFor]="substancePopoverMenu" *ngIf="binding.type != 'Section header'" [disabled]="!binding.code  && !binding.ecl">
+                            <mat-icon>info</mat-icon>
+                        </button>
+                        <mat-menu #substancePopoverMenu="matMenu">
+                            <span mat-menu-item [disableRipple]="true" (click)="$event.stopPropagation()" *ngIf="binding.code">
+                                <h4>Question terminology binding</h4>
+                                <pre>{{ binding.code?.code }} |{{ binding.code?.display }}|</pre>
+                            </span>
+                            <span mat-menu-item [disableRipple]="true" (click)="$event.stopPropagation()" *ngIf="binding.ecl">
+                                <h4>Answer terminology binding</h4>
+                                <pre>{{ binding.ecl }}</pre>
+                            </span>
+                        </mat-menu>
+                        <button mat-icon-button color="primary" (click)="bindings.splice(i,1)" class="tool">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary" (click)="edit(i)" class="tool">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-container-item" [@openClose]="stateName">
+            <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab label="Data collected from form">
+                    <div class="output" *ngIf="bindings.length > 0">
+                        <div id="save" *ngIf="showRightContainer">
+                            <button mat-icon-button (click)="saveOutput(outputStr)" matTooltip="Download"><mat-icon fontIcon="cloud_download"></mat-icon></button>
+                            <button mat-icon-button (click)="copyOutputToClipboard(outputStr)" matTooltip="Copy"><mat-icon fontIcon="content_copy"></mat-icon></button>
+                        </div>
+                        <textarea highlight-js [options]="{}" [lang]="'json'" id="output" [innerHTML]="responseStr" wrap="soft">
+                        </textarea>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Data collected (FHIR Bundle)">
+                    <div class="output" *ngIf="bindings.length > 0">
+                        <div id="save" *ngIf="showRightContainer">
+                            <button mat-icon-button (click)="saveBundleOutput(responseBundleStr)" matTooltip="Download"><mat-icon fontIcon="cloud_download"></mat-icon></button>
+                            <button mat-icon-button (click)="copyOutputToClipboard(responseBundleStr)" matTooltip="Copy"><mat-icon fontIcon="content_copy"></mat-icon></button>
+                        </div>
+                        <textarea highlight-js [options]="{}" [lang]="'json'" id="output" [innerHTML]="responseBundleStr" wrap="soft">
+                        </textarea>
+                    </div>
+                </mat-tab>
+                <mat-tab label="FHIR Questionnaire">
+                    <div class="output" *ngIf="bindings.length > 0">
+                        <div id="save" *ngIf="showRightContainer">
+                            <button mat-icon-button (click)="saveOutput(fhirQuestionnaireStr)" matTooltip="Download"><mat-icon fontIcon="cloud_download"></mat-icon></button>
+                            <button mat-icon-button (click)="copyOutputToClipboard(fhirQuestionnaireStr)" matTooltip="Copy"><mat-icon fontIcon="content_copy"></mat-icon></button>
+                        </div>
+                        <textarea highlight-js [options]="{}" [lang]="'json'" id="output" [innerHTML]="fhirQuestionnaireStr" wrap="soft">
+                        </textarea>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+            <!-- <span class="title" *ngIf="bindings.length > 0">Data collected from form</span><br><br> -->
+            <!-- <div id="output" *ngIf="bindings.length > 0">
+                <div id="save" *ngIf="showRightContainer">
+                    <button mat-icon-button (click)="saveOutput()" matTooltip="Download Output"><mat-icon fontIcon="cloud_download"></mat-icon></button>
+                    <button mat-icon-button (click)="copyOutputToClipboard(outputStr)" matTooltip="Copy Output"><mat-icon fontIcon="content_copy"></mat-icon></button>
+                </div>
+                <textarea highlight-js [options]="{}" [lang]="'json'" id="output" [innerHTML]="outputStr" wrap="soft">
+                </textarea>
+            </div> -->
+        </div>
+    </div>
+</div>

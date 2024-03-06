@@ -1,0 +1,391 @@
+/* snoguess-main.component.css */
+.snoguess-game {
+    padding: 20px; /* Adjust padding as needed */
+    border-radius: 8px;
+    max-width: 80%; /* Set a max-width for larger screens */
+    margin: auto; /* Center the game container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow for depth */
+  }
+  
+  .term-display {
+    font-size: 24px; /* Larger font for the term display */
+    letter-spacing: 4px; /* Adds space between letters */
+    word-break: break-all; /* Ensures the term wraps if it's too long for the container */
+    margin-bottom: 20px; /* Adds some space before the next section */
+    text-align: center; /* Center the term display */
+    font-family: monospace; /* Optional: use a monospace font for consistent character width */
+  }
+  
+  .term-display span {
+    padding: 0 0px; /* Optional: add padding to each character if you want more space */
+  }
+  
+  /* Styles for the hit points display */
+  .hit-points {
+    font-weight: bold;
+    color: #d9534f; /* Red color to indicate the importance of hit points */
+    text-align: center;
+    margin-bottom: 2rem;;
+  }
+  
+  /* Input and button styling */
+  mat-form-field {
+    width: 100%; /* Makes the input fields full width of the container */
+    margin-bottom: 10px; /* Adds some space below each input field */
+  }
+  
+  button {
+    margin-right: 8px; /* Adds spacing between buttons if they're side by side */
+  }
+  
+  .guess-field {
+    display: flex; 
+    align-items: center;
+    vertical-align: middle;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column; /* Stack message and button vertically */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Dark overlay style */
+  .overlay-dark {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  }
+  
+  /* Transparent overlay style */
+  .overlay-transparent {
+    background-color: rgba(0, 0, 0, 0); /* Fully transparent */
+  }
+  
+  .message {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 20px; /* Space between message and button */
+    font-weight: bolder;
+  }
+
+  .reveal {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px; /* Space between message and button */
+    font-weight: bolder;
+  }
+  
+  .won {
+    color: #4CAF50; /* Green color for "Won" */
+    text-shadow: black 2px 2px 2px;
+  }
+  
+  .lost {
+    color: #F44336; /* Red color for "Lost" */
+    text-shadow: rgb(0, 0, 0) 2px 2px 2px;
+  }
+  
+  /* Optional: Style the button if needed */
+  .overlay button { 
+    font-size: 1.5rem;
+    padding: 10px 20px;
+  }
+
+  /* Add these styles to your component's CSS file */
+  .loading-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .progress-bar-message {
+    color: black; /* Adjust the color as needed */
+    font-size: larger; /* Adjust the font size as needed */
+    margin-bottom: 10px; /* Adjust the space between the message and the progress bar */
+    font-style: italic;
+    font-weight: lighter;
+  }
+  
+  .score {
+    font-size: 1.4rem; /* Adjust the font size as needed */
+    font-weight: bold;
+  }
+
+  .score-progression-panel {
+    margin-top: 2rem;
+  }
+  
+  .progress-bar-container {
+    margin-top: 2rem;
+    margin-bottom: 5rem;
+    position: relative;
+    background-color: #e0e0e0; /* Background of the progress bar container */
+    border-radius: 5px; /* Optional: adds rounded corners */
+  }
+  
+  .goal-indicator {
+    position: absolute;
+    bottom: 0px; /* Adjust based on the desired placement relative to the progress bar */
+    width: 2px; /* Width of the indicator */
+    height: 10px; /* Height of the indicator */
+    background-color: #000; /* Default color, in case it's needed */
+  }
+  
+  /* Individual styles for each goal level */
+  .goal-indicator.bronze {
+    background-color: #cd7f32; /* Bronze color */
+  }
+  
+  .goal-indicator.silver {
+    background-color: #C0C0C0; /* Silver color */
+  }
+  
+  .goal-indicator.gold {
+    background-color: #FFD700; /* Gold color */
+  }
+  
+  .goal-indicator.platinum {
+    background-color: #E5E4E2; /* Platinum color */
+  }
+  
+  .goal-indicator.diamond {
+    background-color: #3b49c4; /* Diamond color, resembling a bright light blue */
+  }
+  
+  .trophy-icon {
+    position: absolute;
+    bottom: -35px; /* Position below the goal indicators */
+    font-size: 24px; /* Icon size */
+    width: 24px; /* Ensure a consistent width for alignment */
+    transition: transform 0.3s ease; /* Optional: smooth transition for scaling and moving */
+  }
+  
+  .trophy-large {
+    /* Scale the icon and move it 3px down and 2px to the left */
+    transform: scale(2.5) translate(-2px, 3px); /* Adjust scale and translation values as needed */
+  }  
+
+  .bronze {
+    color: #cd7f32; /* Bronze color */
+  }
+  
+  .silver {
+    color: #C0C0C0; /* Silver color */
+  }
+
+  .gold {
+    color: #FFD700; /* Silver color */
+  }
+
+  .platinum {
+    color: #E5E4E2; /* Silver color */
+  }
+
+  .diamond {
+    color: #3b49c4; /* Silver color */
+  }
+
+  .shadow-local {
+    text-shadow: black 2px 2px 2px;
+  }
+  
+  .star-icon {
+    position: absolute;
+    bottom: -40px; /* Adjust this value based on your layout */
+    font-size: 30px; /* Size of the star icons */
+    width: 30px; /* Ensure a consistent width for alignment */
+    transition: transform 0.3s ease; /* Optional: for a smooth appearance */
+  }
+  
+  .left-star {
+    transform: translateX(-50px); /* Adjust left positioning */
+  }
+  
+  .right-star {
+    transform: translateX(30px); /* Adjust right positioning */
+  }
+    
+  .goal-name {
+    position: absolute;
+    bottom: -75px; /* Adjust this value based on your layout */
+    width: 100px; /* Adjust width as needed to accommodate the text */
+    margin-left: -50px; /* Half of the width to center the text */
+    text-align: center;
+    font-size: 12px; /* Adjust font size as needed */
+    font-weight: bold;
+    color: #000; /* Adjust text color as needed */
+  }
+
+  .large-icon {
+    font-size: 5rem; /* Adjust the font size as needed */
+    width: 5rem; /* Ensure a consistent width for alignment */
+    height: 5rem; /* Ensure a consistent height for alignment */
+  }
+  
+  .note {
+    font-size: 0.8rem;
+    font-weight: lighter;
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .hints-container {
+    margin-top: 1rem;
+  }
+  
+  .hints-callout h2 {
+    margin-bottom: .5rem ;
+  }
+  
+  .hint-item {
+    color: #555; /* Slightly lighter text for the hints */
+    font-size: 1em;
+    list-style-type: none; /* Removing default bullets */
+    padding: 5px 0; /* Spacing between hints */
+    position: relative; /* To position the bullets correctly */
+    padding-left: 30px; /* Add padding to make space for the custom bullet */
+  }
+  
+
+  ul {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0;
+    margin: 0;
+  }
+  
+  li {
+    margin-bottom: 10px; /* Space between hints */
+    color: #666; /* Lighter text for hints */
+    font-size: 1.2rem; /* Adjust font size as needed */
+  }
+
+  .guess-message {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  }
+  
+/* Target the container for general styling */
+.assests-loading-container {
+  text-align: center;
+  font-size: 20px; /* Adjust based on your design */
+  color: #FFFFFF; /* Light text color for dark backgrounds or vice versa */
+}
+
+/* Styling the progress bar container */
+.game-progress-bar {
+  border-radius: 22px; /* Rounded corners */
+  overflow: hidden; /* Ensures the inner bar respects the container's border-radius */
+  background-color: #E0E0E0; /* Light grey background for the unfilled portion */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/* Styling the filled portion of the progress bar */
+.game-progress-bar .mat-progress-bar-fill::after {
+  background-color: #4CAF50; /* Vibrant fill color */
+  border-radius: 22px; /* Ensure the fill also has rounded corners */
+}
+
+.game-buttons {
+  display: flex; 
+  align-items: center;
+  vertical-align: middle;
+  justify-content: center;
+  gap: 10px;
+}
+
+.level-details {
+  visibility: hidden; /* Hide details by default but keep the space */
+}
+
+.level-container:hover .level-details {
+  visibility: visible; /* Show details on hover */
+}
+
+
+@media (max-width: 1300px) {
+  .menu-buttons {
+    font-size: large;
+  }
+}
+
+
+/* Media query for devices with a max width of 768px (common breakpoint for tablets and below) */
+@media (max-width: 876px) {
+  .snoguess-game,
+  .snoguess-game .bg-gradient-to-b,
+  .snoguess-game .progress-bar-container,
+  .snoguess-game .hints-container,
+  .snoguess-game .score-progression-panel,
+  .snoguess-game .guess-field,
+  .snoguess-game .overlay,
+  .snoguess-game img,
+  .snoguess-game div {
+    width: 100% !important; /* Override width to be 100% */
+    max-width: 100% !important; /* Ensure elements do not exceed the viewport width */
+    margin: 0 auto; /* Center align elements if necessary */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    box-shadow: none; /* Remove shadow for smaller screens */
+  }
+
+  .snoguess-game .game-buttons {
+    flex-direction: column; /* Stack buttons vertically on smaller screens */
+    margin-top: 1rem;
+  }
+
+  .snoguess-game .game-buttons div {
+    width: fit-content !important; /* Make buttons full width on smaller screens */
+    margin-bottom: 1rem;
+  }
+
+  .snoguess-game .goal-indicator {
+    display: none; /* Hide goal indicators on smaller screens */
+  }
+
+  .snoguess-game .hit-points {
+    margin-top: 1rem; /* Adjust margin for smaller screens */
+  }
+
+  .snoguess-game .term-display {
+    font-size: 20px; /* Adjust font size for smaller screens */
+    margin-top: 1rem; /* Adjust margin for smaller screens */
+  }
+
+  .snoguess-game .guess-message {
+    font-size: 12px; /* Adjust margin for smaller screens */
+  }
+
+  .snoguess-game li {
+    font-size: 11px !important; /* Adjust font size for smaller screens */
+  }
+
+  .snoguess-game .pt-1,
+  .snoguess-game .pb-1,
+  .snoguess-game .pl-6,
+  .snoguess-game .pr-6,
+  .snoguess-game .pt-4,
+  .snoguess-game .pb-4,
+  .snoguess-game .pl-12,
+  .snoguess-game .pr-12 {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+
+  /* Adjust font sizes if necessary */
+  .snoguess-game .font-bold {
+    font-size: 16px; /* Example to adjust font size on smaller screens */
+  }
+
+  .snoguess-game .diff-label {
+    text-align: right;
+  }
+}

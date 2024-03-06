@@ -1,0 +1,67 @@
+
+#main-card {
+    padding: 10px;
+}
+app-autocomplete-binding {
+    display: block;
+    min-width: 500px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 10px 0;
+    gap: 10px;
+}
+
+.container-space {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 10px 0;
+    gap: 10px;
+}
+
+.problem-list {
+    width: 60%;
+}
+
+.tag {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+}
+
+td {
+    position: relative;
+}
+
+.pill {
+    display: inline-block;
+    font-size: 10px;
+    background-color: orange;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 1rem;
+}
+
+.mat-column-display {
+    min-width: 350px;
+}
+
+.long-tooltip {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    font-weight: lighter;
+    font-size: 0.9rem;
+}
