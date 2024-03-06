@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -7,12 +7,22 @@ import { AuthService } from '../auth.service';
   templateUrl: './callback.component.html',
   styleUrls: ['./callback.component.css']
 })
-
 export class CallbackComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute // Inject ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    // Access query parameters
+    this.route.queryParams.subscribe(params => {
+      console.log('Query Parameters:', params);
+      // Here you could look for specific parameters, e.g., `code` for the authorization code
+      // Example: console.log('Authorization Code:', params['code']);
+    });
+
     this.authService.handleAuth()
       .then(() => {
         console.log('Authentication successful');

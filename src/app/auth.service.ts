@@ -18,12 +18,20 @@ export class AuthService {
   public handleAuth(): Promise<Client> {
     return FHIR.oauth2.ready().then(client => {
       this.fhirClient.next(client); // Notify subscribers that the client is ready
-      
+  
       // Extract and log the access token
-      const accessToken = client?.state?.tokenResponse?.access_token;
-      console.log("Access Token:", accessToken);
-
+      const tokenResponse = client.state.tokenResponse;
+      if (tokenResponse && tokenResponse.access_token) {
+        console.log("Access Token:", tokenResponse.access_token);
+      } else {
+        console.error("Access token is undefined. Token response:", tokenResponse);
+      }
+  
       return client;
+    }).catch(error => {
+      console.error("Error in OAuth2 flow:", error);
+      throw error; // Rethrow the error to ensure it's caught where handleAuth is called
     });
   }
+  
 }
