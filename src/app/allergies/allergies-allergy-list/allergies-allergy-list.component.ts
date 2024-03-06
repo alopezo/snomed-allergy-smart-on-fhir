@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { HighlightJsDirective } from 'ngx-highlight-js';
 import { TerminologyService } from '../../services/terminology.service';
-import { lastValueFrom, map } from 'rxjs';
+import { lastValueFrom, map, take } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { saveAs } from 'file-saver';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -146,24 +146,25 @@ export class AllergiesAllergyListComponent  implements OnInit {
     private clipboard: Clipboard, 
     private authService: AuthService,
     private _snackBar: MatSnackBar) {
-      this.fhirClient = this.authService.getFhirClient(); // Get the client object from AuthService
+      this.authService.getFhirClient().pipe(take(1)).subscribe((client) => {
+        if (client) {
+          this.fhirClient = client;
+          this.initFhirClient();
+        }
+      });
     }
 
   ngOnInit(): void {
     this.updateAllergyStr();
     // const client = FHIR.client("https://r3.smarthealthit.org");
     // client.request("Patient").then(console.log).catch(console.error);
+  }
 
-    if (this.fhirClient) {
-      console.log('FHIR client is initialized');
-      console.log(this.fhirClient);
-      // You can now use this.fhirClient to make FHIR server requests
-      if (this.fhirClient.patient) {
-        console.log('FHIR client has patient data');
-        console.log(this.fhirClient.patient);
-      }
-      if (this.fhirClient.patient.id) {
-        this.fhirClient.request(`Patient/${this.fhirClient.patient.id}`)
+  private initFhirClient() {
+    console.log('FHIR client is ready');
+    console.log(this.fhirClient?.patient);
+    if (this.fhirClient?.patient?.id) {
+      this.fhirClient.request(`Patient/${this.fhirClient.patient.id}`)
         .then(patient => {
           // Handle the patient data
           console.log(patient);
@@ -171,11 +172,9 @@ export class AllergiesAllergyListComponent  implements OnInit {
         .catch(error => {
           console.error('Failed to fetch patient data', error);
         });
-      }
     } else {
-      console.error('FHIR client is not initialized');
+      console.error('FHIR client is not initialized or patient data is not available.');
     }
-
   }
 
   onReactionsChange(updatedReactions: any[]) {
