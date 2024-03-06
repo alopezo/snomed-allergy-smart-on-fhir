@@ -38,7 +38,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "https://ihtsdo.github.io/sct-implementation-demonstrator/",
+              "baseHref": "https://alopezo.github.io/snomed-allergy-smart-on-fhir/",
               "budgets": [
                 {
                   "type": "initial",
