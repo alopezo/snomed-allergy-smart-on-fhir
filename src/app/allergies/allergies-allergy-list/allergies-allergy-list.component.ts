@@ -162,31 +162,38 @@ export class AllergiesAllergyListComponent  implements OnInit {
 
   private initFhirClient() {
     console.log('FHIR client is ready');
-    this.fhirClient?.patient.read().then(patient => {
-      // Here you can process patient data or store it
-      console.log("Patient data:", patient);
-      // If you want to store patient data in the service, add a property for it
-      // and update it here.
-    }).catch(error => {
-      console.error("Error fetching patient data:", error);
-    });
-    // Fetching patient's conditions
-    this.fhirClient?.request(`Patient/${this.fhirClient?.patient.id}/Condition`)
-    .then(conditions => {
-      console.log("Patient Conditions:", conditions);
-    })
-    .catch(error => {
-      console.error("Error fetching patient conditions:", error);
-    });
+    setTimeout(() => {
+      this.fhirClient?.patient.read().then(patient => {
+        console.log("Patient data:", patient);
+      }).catch(error => {
+        console.error("Error fetching patient data:", error);
+      });
+    }, 3000);
+    // this.fhirClient?.patient.read().then(patient => {
+    //   // Here you can process patient data or store it
+    //   console.log("Patient data:", patient);
+    //   // If you want to store patient data in the service, add a property for it
+    //   // and update it here.
+    // }).catch(error => {
+    //   console.error("Error fetching patient data:", error);
+    // });
+    // // Fetching patient's conditions
+    // this.fhirClient?.request(`Patient/${this.fhirClient?.patient.id}/Condition`)
+    // .then(conditions => {
+    //   console.log("Patient Conditions:", conditions);
+    // })
+    // .catch(error => {
+    //   console.error("Error fetching patient conditions:", error);
+    // });
 
-    // Fetching patient's allergies
-    this.fhirClient?.request(`Patient/${this.fhirClient?.patient.id}/AllergyIntolerance`)
-    .then(allergies => {
-      console.log("Patient Allergies:", allergies);
-    })
-    .catch(error => {
-      console.error("Error fetching patient allergies:", error);
-    });
+    // // Fetching patient's allergies
+    // this.fhirClient?.request(`Patient/${this.fhirClient?.patient.id}/AllergyIntolerance`)
+    // .then(allergies => {
+    //   console.log("Patient Allergies:", allergies);
+    // })
+    // .catch(error => {
+    //   console.error("Error fetching patient allergies:", error);
+    // });
 
   }
 
