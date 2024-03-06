@@ -155,8 +155,15 @@ export class AllergiesAllergyListComponent  implements OnInit {
     // client.request("Patient").then(console.log).catch(console.error);
 
     if (this.fhirClient) {
+      console.log('FHIR client is initialized');
+      console.log(this.fhirClient);
       // You can now use this.fhirClient to make FHIR server requests
-      this.fhirClient.request(`Patient/${this.fhirClient.patient.id}`)
+      if (this.fhirClient.patient) {
+        console.log('FHIR client has patient data');
+        console.log(this.fhirClient.patient);
+      }
+      if (this.fhirClient.patient.id) {
+        this.fhirClient.request(`Patient/${this.fhirClient.patient.id}`)
         .then(patient => {
           // Handle the patient data
           console.log(patient);
@@ -164,6 +171,7 @@ export class AllergiesAllergyListComponent  implements OnInit {
         .catch(error => {
           console.error('Failed to fetch patient data', error);
         });
+      }
     } else {
       console.error('FHIR client is not initialized');
     }
