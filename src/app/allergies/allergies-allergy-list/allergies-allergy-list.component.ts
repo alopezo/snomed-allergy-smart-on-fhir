@@ -8,6 +8,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackAlertComponent } from 'src/app/alerts/snack-alert';
 import * as FHIR from 'fhirclient';
+import Client from 'fhirclient/lib/Client';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   selector: 'app-allergies-allergy-list',
@@ -17,6 +19,8 @@ import * as FHIR from 'fhirclient';
 export class AllergiesAllergyListComponent  implements OnInit {
 
   @Output() newProblem = new EventEmitter<any>();
+
+  private fhirClient!: Client | null;
 
   clinicalStatusOptions = [
     { system: "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", code: 'active', display: 'Active' },
@@ -138,12 +142,32 @@ export class AllergiesAllergyListComponent  implements OnInit {
 
   outputAllergyStr = '';
 
-  constructor(private terminologyService: TerminologyService, private clipboard: Clipboard, private _snackBar: MatSnackBar) { }
+  constructor(private terminologyService: TerminologyService, 
+    private clipboard: Clipboard, 
+    private authService: AuthService,
+    private _snackBar: MatSnackBar) {
+      this.fhirClient = this.authService.getFhirClient(); // Get the client object from AuthService
+    }
 
   ngOnInit(): void {
     this.updateAllergyStr();
-    const client = FHIR.client("https://r3.smarthealthit.org");
-    client.request("Patient").then(console.log).catch(console.error);
+    // const client = FHIR.client("https://r3.smarthealthit.org");
+    // client.request("Patient").then(console.log).catch(console.error);
+
+    if (this.fhirClient) {
+      // You can now use this.fhirClient to make FHIR server requests
+      this.fhirClient.request(`Patient/${this.fhirClient.patient.id}`)
+        .then(patient => {
+          // Handle the patient data
+          console.log(patient);
+        })
+        .catch(error => {
+          console.error('Failed to fetch patient data', error);
+        });
+    } else {
+      console.error('FHIR client is not initialized');
+    }
+
   }
 
   onReactionsChange(updatedReactions: any[]) {
