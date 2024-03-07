@@ -9,9 +9,10 @@
         <script>
             FHIR.oauth2.authorize({
               clientId: "YOUR_CLIENT_ID",
-            //   scope: "launch openid fhirUser patient/*.read",
+                //   scope: "launch openid fhirUser patient/*.read",
               scope: "patient/*.* user/*.* launch launch/patient launch/encounter openid fhirUser profile offline_access",
-              redirectUri: window.location.origin + "/snomed-allergy-smart-on-fhir/#/callback"
+                //   redirectUri: window.location.origin + "/snomed-allergy-smart-on-fhir/#/callback"
+                redirectUri: window.location.origin + "/session.html"
             });
         </script>
     </body>

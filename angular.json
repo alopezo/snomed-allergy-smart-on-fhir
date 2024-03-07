@@ -24,7 +24,8 @@
               "src/favicon.png",
               "src/assets",
               "src/404.html",
-              "src/launch.html"
+              "src/launch.html",
+              "src/session.html"
             ],
             "styles": [
               "src/custom-theme.scss",
