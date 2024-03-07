@@ -38,7 +38,7 @@ export class AllergiesComponent implements OnInit {
           console.log('Conditions:', conditions);
           // Call addProblem for each condition
           for (const condition of conditions) {
-              await this.addProblem(condition); // await ensures each addProblem call completes before continuing
+              await this.addProblem(condition?.code?.coding[0]); // await ensures each addProblem call completes before continuing
           }
       })
       .catch((error) => {
