@@ -27,7 +27,7 @@ export class CallbackComponent implements OnInit {
     this.authService.handleAuth()
       .then(() => {
         console.log('Authentication successful');
-        this.router.navigate(['']);
+        this.router.navigate([''], { queryParamsHandling: 'preserve' });
         // FHIR.oauth2.ready().then(function(client) {
                 
         //   // Render the current patient (or any error)
@@ -66,8 +66,8 @@ export class CallbackComponent implements OnInit {
         //   );
 
         // }).catch(console.error);
-          // this.router.navigate(['']); // Navigate to the main part of the application
-        })
+        this.router.navigate(['']); // Navigate to the main part of the application
+      })
       .catch(error => {
         console.error('Authentication failed', error);
         this.router.navigate(['']); // Navigate to an error page or show an error message

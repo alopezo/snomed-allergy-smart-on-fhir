@@ -148,13 +148,7 @@ export class AllergiesAllergyListComponent  implements OnInit {
     private authService: AuthService,
     private route: ActivatedRoute,
     private _snackBar: MatSnackBar) {
-      this.authService.getFhirClient().subscribe((client) => {
-        if (client) {
-          this.fhirClient = client;
-          this.outputAllergyStr = "FHIR client is ready\n";
-          console.log(this.fhirClient);
-        }
-      });
+      
 
       // FHIR.oauth2.ready().then(function(client) {
                 
@@ -205,43 +199,53 @@ export class AllergiesAllergyListComponent  implements OnInit {
       // Here you could look for specific parameters, e.g., `code` for the authorization code
       // Example: console.log('Authorization Code:', params['code']);
     });
-    this.initFhirClient();
+    this.authService.handleAuth().then(() => {
+        console.log('Authentication successful');
+        this.initFhirClient();
+    });
   }
 
   private initFhirClient() {
-    console.log('FHIR client is ready');
-    setTimeout(() => {
-      this.fhirClient?.patient.read().then(patient => {
-        console.log("Patient data:", patient);
-      }).catch(error => {
-        console.error("Error fetching patient data:", error);
-      });
-    }, 3000);
-    // this.fhirClient?.patient.read().then(patient => {
-    //   // Here you can process patient data or store it
-    //   console.log("Patient data:", patient);
-    //   // If you want to store patient data in the service, add a property for it
-    //   // and update it here.
-    // }).catch(error => {
-    //   console.error("Error fetching patient data:", error);
-    // });
-    // // Fetching patient's conditions
-    // this.fhirClient?.request(`Patient/${this.fhirClient?.patient.id}/Condition`)
-    // .then(conditions => {
-    //   console.log("Patient Conditions:", conditions);
-    // })
-    // .catch(error => {
-    //   console.error("Error fetching patient conditions:", error);
-    // });
+    console.log('Initializing fhir client');
 
-    // // Fetching patient's allergies
-    // this.fhirClient?.request(`Patient/${this.fhirClient?.patient.id}/AllergyIntolerance`)
-    // .then(allergies => {
-    //   console.log("Patient Allergies:", allergies);
-    // })
-    // .catch(error => {
-    //   console.error("Error fetching patient allergies:", error);
-    // });
+    FHIR.oauth2.ready().then(function(client) {
+            
+      // Render the current patient (or any error)
+      client.patient.read().then(
+          function(pt) {
+            console.log(pt);
+          },
+          function(error) {
+            console.error(error.stack);
+          }
+      );
+      
+      // Get MedicationRequests for the selected patient
+      client.request("/MedicationRequest?patient=" + client.patient.id, {
+          resolveReferences: [ "medicationReference" ],
+          graph: true
+      })
+      
+      // Reject if no MedicationRequests are found
+      .then(function(data) {
+          if (!data.entry || !data.entry.length) {
+              throw new Error("No medications found for the selected patient");
+          }
+          return data.entry;
+      })
+      
+
+      // Render the current patient's medications (or any error)
+      .then(
+          function(meds) {
+            console.log(meds);
+          },
+          function(error) {
+            console.error(error.stack);
+          }
+      );
+
+    }).catch(console.error);
 
   }
 

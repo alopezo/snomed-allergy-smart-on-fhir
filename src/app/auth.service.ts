@@ -20,12 +20,12 @@ export class AuthService {
       this.fhirClient.next(client); // Notify subscribers that the client is ready
   
       // Extract and log the access token
-      const tokenResponse = client.state.tokenResponse;
-      if (tokenResponse && tokenResponse.access_token) {
-        console.log("Access Token:", tokenResponse.access_token);
-      } else {
-        console.error("Access token is undefined. Token response:", tokenResponse);
-      }
+      // const tokenResponse = client.state.tokenResponse;
+      // if (tokenResponse && tokenResponse.access_token) {
+      //   console.log("Access Token:", tokenResponse.access_token);
+      // } else {
+      //   console.error("Access token is undefined. Token response:", tokenResponse);
+      // }
   
       return client;
     }).catch(error => {
