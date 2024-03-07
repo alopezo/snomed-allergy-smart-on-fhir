@@ -24,9 +24,9 @@ export class CallbackComponent implements OnInit {
       // Example: console.log('Authorization Code:', params['code']);
     });
 
-    this.authService.handleAuth()
-      .then(() => {
-        console.log('Authentication successful in callback');
+    // this.authService.handleAuth()
+    //   .then(() => {
+        console.log('Authentication successful in callback, single intent');
         // this.router.navigate([''], { queryParamsHandling: 'preserve' });
         FHIR.oauth2.ready().then(function(client) {
                 
@@ -66,10 +66,10 @@ export class CallbackComponent implements OnInit {
           );
         }).catch(console.error);
         // this.router.navigate(['']); // Navigate to the main part of the application
-      })
-      .catch(error => {
-        console.error('Authentication failed', error);
-        // this.router.navigate(['']); // Navigate to an error page or show an error message
-      });
+      // })
+      // .catch(error => {
+      //   console.error('Authentication failed', error);
+      //   // this.router.navigate(['']); // Navigate to an error page or show an error message
+      // });
   }
 }
