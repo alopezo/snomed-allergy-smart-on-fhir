@@ -199,14 +199,15 @@ export class AllergiesAllergyListComponent  implements OnInit {
       // Here you could look for specific parameters, e.g., `code` for the authorization code
       // Example: console.log('Authorization Code:', params['code']);
     });
-    this.authService.handleAuth().then(() => {
-        console.log('Authentication successful');
-        this.initFhirClient();
-    });
+    this.initFhirClient();
+
+    // this.authService.handleAuth().then(() => {
+    //     console.log('Authentication successful');
+    // });
   }
 
   private initFhirClient() {
-    console.log('Initializing fhir client');
+    console.log('Initializing fhir client in allergy component');
 
     FHIR.oauth2.ready().then(function(client) {
             
