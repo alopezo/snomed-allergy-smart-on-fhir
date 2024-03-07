@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
 import { AuthService } from '../auth.service';
+import * as FHIR from 'fhirclient';
 
 @Component({
   selector: 'app-callback',
@@ -26,11 +27,49 @@ export class CallbackComponent implements OnInit {
     this.authService.handleAuth()
       .then(() => {
         console.log('Authentication successful');
-        this.router.navigate(['']); // Navigate to the main part of the application
+        FHIR.oauth2.ready().then(function(client) {
+                
+          // Render the current patient (or any error)
+          client.patient.read().then(
+              function(pt) {
+                console.log(pt);
+              },
+              function(error) {
+                console.error(error.stack);
+              }
+          );
+          
+          // Get MedicationRequests for the selected patient
+          client.request("/MedicationRequest?patient=" + client.patient.id, {
+              resolveReferences: [ "medicationReference" ],
+              graph: true
+          })
+          
+          // Reject if no MedicationRequests are found
+          .then(function(data) {
+              if (!data.entry || !data.entry.length) {
+                  throw new Error("No medications found for the selected patient");
+              }
+              return data.entry;
+          })
+          
+
+          // Render the current patient's medications (or any error)
+          .then(
+              function(meds) {
+                console.log(meds);
+              },
+              function(error) {
+                console.error(error.stack);
+              }
+          );
+
+      }).catch(console.error);
+        // this.router.navigate(['']); // Navigate to the main part of the application
       })
       .catch(error => {
         console.error('Authentication failed', error);
-        this.router.navigate(['']); // Navigate to an error page or show an error message
+        // this.router.navigate(['']); // Navigate to an error page or show an error message
       });
   }
 }
