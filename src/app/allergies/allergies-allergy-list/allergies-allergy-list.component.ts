@@ -205,6 +205,7 @@ export class AllergiesAllergyListComponent  implements OnInit {
       // Here you could look for specific parameters, e.g., `code` for the authorization code
       // Example: console.log('Authorization Code:', params['code']);
     });
+    this.initFhirClient();
   }
 
   private initFhirClient() {
