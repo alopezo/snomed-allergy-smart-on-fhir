@@ -15,46 +15,62 @@ export class AllergiesComponent implements OnInit {
   @ViewChild(AllergiesProblemListComponent) allergiesProblemListComponent!: AllergiesProblemListComponent;
 
   constructor(private _snackBar: MatSnackBar) { }
+  
   ngOnInit(): void {
     this.initFhirClient();
   }
-
+  
   private initFhirClient() {
     console.log('Initializing FHIR client in allergy component');
-  
+
     FHIR.oauth2.ready().then(client => {
-  
-      client.request("/Condition?patient=" + client.patient.id, {
-        graph: true
-      })
-      .then(async (data) => { // Use async here to allow await inside
-          // Reject if no Conditions are found
-          if (!data.entry || !data.entry.length) {
-              throw new Error("No conditions found for the selected patient");
-          }
-          
-          // Get conditions from the entry
-          const conditions = data.entry.map((entry: any) => entry.resource);
-          console.log('Conditions:', conditions);
-          // Call addProblem for each condition
-          for (const condition of conditions) {
-              await this.addProblem(condition?.code?.coding[0]); // await ensures each addProblem call completes before continuing
-          }
-      })
-      .catch((error) => {
-          // Handle errors here
-          console.error(error);
-          // Optionally, handle error with UI feedback
-          this._snackBar.openFromComponent(SnackAlertComponent, {
-            duration: 3 * 1000,
-            data: "Failed to load conditions",
-            panelClass: ['red-snackbar']
-          });
-          // You can throw the error again if you want the promise rejection to propagate
-          throw error;
-      });
-  
+      this.retrieveConditions(client);
+      this.retrieveAllergies(client);
     }).catch(console.error);
+  }
+
+  private async retrieveConditions(client: any) {
+    try {
+      const data = await client.request("/Condition?patient=" + client.patient.id, {
+        graph: true
+      });
+      
+      if (!data.entry || !data.entry.length) {
+          throw new Error("No conditions found for the selected patient");
+      }
+      
+      const conditions = data.entry.map((entry: any) => entry.resource);
+      conditions.forEach((condition: any) => this.addProblem(condition));
+    } catch (error) {
+      console.error(error);
+      this.handleError("Failed to load conditions");
+    }
+  }
+
+  private async retrieveAllergies(client: any) {
+    try {
+      const data = await client.request("/AllergyIntolerance?patient=" + client.patient.id, {
+        graph: true
+      });
+      
+      if (!data.entry || !data.entry.length) {
+          throw new Error("No allergies found for the selected patient");
+      }
+      
+      const allergies = data.entry.map((entry: any) => entry.resource);
+      // allergies.forEach((allergy: any) => this.addProblem(allergy));
+    } catch (error) {
+      console.error(error);
+      this.handleError("Failed to load allergies");
+    }
+  }
+
+  private handleError(message: string) {
+    this._snackBar.openFromComponent(SnackAlertComponent, {
+      duration: 3000,
+      data: message,
+      panelClass: ['red-snackbar']
+    });
   }
   
 
