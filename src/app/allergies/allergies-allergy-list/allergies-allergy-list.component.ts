@@ -199,56 +199,14 @@ export class AllergiesAllergyListComponent  implements OnInit {
       // Here you could look for specific parameters, e.g., `code` for the authorization code
       // Example: console.log('Authorization Code:', params['code']);
     });
-    this.initFhirClient();
+    // this.initFhirClient();
 
     // this.authService.handleAuth().then(() => {
     //     console.log('Authentication successful');
     // });
   }
 
-  private initFhirClient() {
-    console.log('Initializing fhir client in allergy component');
-
-    FHIR.oauth2.ready().then(function(client) {
-            
-      // Render the current patient (or any error)
-      client.patient.read().then(
-          function(pt) {
-            console.log(pt);
-          },
-          function(error) {
-            console.error(error.stack);
-          }
-      );
-      
-      // Get MedicationRequests for the selected patient
-      client.request("/MedicationRequest?patient=" + client.patient.id, {
-          resolveReferences: [ "medicationReference" ],
-          graph: true
-      })
-      
-      // Reject if no MedicationRequests are found
-      .then(function(data) {
-          if (!data.entry || !data.entry.length) {
-              throw new Error("No medications found for the selected patient");
-          }
-          return data.entry;
-      })
-      
-
-      // Render the current patient's medications (or any error)
-      .then(
-          function(meds) {
-            console.log(meds);
-          },
-          function(error) {
-            console.error(error.stack);
-          }
-      );
-
-    }).catch(console.error);
-
-  }
+  
 
   onReactionsChange(updatedReactions: any[]) {
     // this.selectedReactions = updatedReactions;
