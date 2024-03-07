@@ -13,6 +13,11 @@
                 overflow: scroll;
                 border: 1px solid #CCC;
             }
+            #redirectButton {
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
@@ -21,6 +26,8 @@
         <br/>
         <h4>Medications</h4>
         <div id="meds">Loading...</div>
+        <br/>
+        <button id="redirectButton">Go to Callback</button>
         <script type="text/javascript">
             FHIR.oauth2.ready().then(function(client) {
                 
@@ -48,7 +55,6 @@
                     return data.entry;
                 })
                 
-
                 // Render the current patient's medications (or any error)
                 .then(
                     function(meds) {
@@ -58,6 +64,11 @@
                         document.getElementById("meds").innerText = error.stack;
                     }
                 );
+
+                document.getElementById("redirectButton").addEventListener("click", function() {
+                    var queryParams = window.location.search;
+                    window.location.href = "/#/callback" + queryParams;
+                });
 
             }).catch(console.error);
         </script>
