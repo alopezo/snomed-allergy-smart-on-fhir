@@ -38,9 +38,9 @@ export class AllergiesComponent implements OnInit {
       if (!data.entry || !data.entry.length) {
           throw new Error("No conditions found for the selected patient");
       }
-      
+      console.log('Conditions data: ', data);
       const conditions = data.entry.map((entry: any) => entry.resource);
-      conditions.forEach((condition: any) => this.addProblem(condition));
+      conditions.forEach((condition: any) => this.addProblem(condition?.code?.coding[0]));
     } catch (error) {
       console.error(error);
       this.handleError("Failed to load conditions");
@@ -52,9 +52,9 @@ export class AllergiesComponent implements OnInit {
       const data = await client.request("/AllergyIntolerance?patient=" + client.patient.id, {
         graph: true
       });
-      
+      console.log('Allergies data: ', data);
       if (!data.entry || !data.entry.length) {
-          throw new Error("No allergies found for the selected patient");
+          console.log("No allergies found for the selected patient");
       }
       
       const allergies = data.entry.map((entry: any) => entry.resource);
