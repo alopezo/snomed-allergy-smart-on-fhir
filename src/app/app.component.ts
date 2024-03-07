@@ -59,6 +59,11 @@ export class AppComponent {
     //     this.embeddedMode = false;
     //   }
     // });
+    this.activatedRoute.queryParams.subscribe(params => {
+      console.log('Query Parameters app:', params);
+      // Here you could look for specific parameters, e.g., `code` for the authorization code
+      // Example: console.log('Authorization Code:', params['code']);
+    });
   }
 
   navigate(route: string) {
