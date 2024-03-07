@@ -69,7 +69,7 @@
 
                 document.getElementById("redirectButton").addEventListener("click", function() {
                     var queryParams = window.location.search;
-                    window.location.href = "/snomed-allergy-smart-on-fhir/#/callback" + queryParams;
+                    window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
                 });
 
             }).catch(console.error);
