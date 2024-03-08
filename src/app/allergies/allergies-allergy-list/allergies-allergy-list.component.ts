@@ -158,6 +158,7 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('Allergies changed: ', this.allergies)
     if (changes['allergies'] && this.allergies) {
       this.dataSource.data = this.allergies;
     }

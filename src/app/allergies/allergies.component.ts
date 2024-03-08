@@ -72,15 +72,11 @@ export class AllergiesComponent implements OnInit {
         const allergies = data.entry.map((entry: any) => entry.resource);
         // filter out allergies without patient element
         allergies.forEach((allergy: any) => {
-          console.log('Allergy: ', allergy)
           if (allergy.patient) {
-            console.log('Allergy patient: ', allergy.patient)
             this.allergies.push(allergy);
           } else {
-            console.log('Allergy without patient: ', allergy)
           }
         });
-        console.log('Allergies: ', this.allergies);
       }
     } catch (error) {
       console.error(error);
