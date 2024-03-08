@@ -70,7 +70,12 @@ export class AllergiesComponent implements OnInit {
       } else {
         console.log('Allergies data: ', data);
         const allergies = data.entry.map((entry: any) => entry.resource);
-        this.allergies = allergies;
+        // filter out allergies without patient element
+        allergies.forEach((allergy: any) => {
+          if (allergy.patient) {
+            this.allergies.push(allergy);
+          }
+        });
       }
     } catch (error) {
       console.error(error);

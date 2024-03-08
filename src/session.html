@@ -21,25 +21,26 @@
         </style>
     </head>
     <body>
-        <h4>Current Patient</h4>
+        <p>Authenticating...</p>
+        <!-- <h4>Current Patient</h4>
         <div id="patient">Loading...</div>
         <br/>
         <h4>Medications</h4>
         <div id="meds">Loading...</div>
         <br/>
-        <button id="redirectButton">Go to Callback</button>
+        <button id="redirectButton">Go to Callback</button> -->
         <script type="text/javascript">
             var queryParams = window.location.search;
             FHIR.oauth2.ready().then(function(client) {
                 
                 // Render the current patient (or any error)
                 client.patient.read().then(
-                    function(pt) {
-                        document.getElementById("patient").innerText = JSON.stringify(pt, null, 4);
-                    },
-                    function(error) {
-                        document.getElementById("patient").innerText = error.stack;
-                    }
+                    // function(pt) {
+                    //     document.getElementById("patient").innerText = JSON.stringify(pt, null, 4);
+                    // },
+                    // function(error) {
+                    //     document.getElementById("patient").innerText = error.stack;
+                    // }
                 );
                 
                 // Get MedicationRequests for the selected patient
@@ -59,18 +60,18 @@
                 // Render the current patient's medications (or any error)
                 .then(
                     function(meds) {
-                        document.getElementById("meds").innerText = JSON.stringify(meds, null, 4);
+                        // document.getElementById("meds").innerText = JSON.stringify(meds, null, 4);
                         window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
                     },
                     function(error) {
-                        document.getElementById("meds").innerText = error.stack;
+                        // document.getElementById("meds").innerText = error.stack;
                     }
                 );
 
-                document.getElementById("redirectButton").addEventListener("click", function() {
-                    var queryParams = window.location.search;
-                    window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
-                });
+                // document.getElementById("redirectButton").addEventListener("click", function() {
+                //     var queryParams = window.location.search;
+                //     window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
+                // });
 
             }).catch(console.error);
         </script>
