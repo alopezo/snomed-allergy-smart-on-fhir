@@ -22,8 +22,9 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
   @Input() patientId: string = '';
   @Output() newProblem = new EventEmitter<any>();
   @Output() newAllergy = new EventEmitter<any>();
+  @Output() deleteAllergy = new EventEmitter<any>();
 
-  displayedColumns: string[] = ['type', 'category', 'allergen', 'clinicalStatus', 'verificationStatus', 'criticality'];
+  displayedColumns: string[] = ['type', 'category', 'allergen', 'clinicalStatus', 'verificationStatus', 'criticality', 'actions'];
   dataSource = new MatTableDataSource<any>();
 
   clinicalStatusOptions = [
@@ -361,6 +362,11 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
 
   saveToSmartServer() {
     this.newAllergy.emit(this.outputAllergy);
+    this.allergies.push(this.outputAllergy);
+  }
+
+  deleteAllergyItem(allergy: any) {
+    this.deleteAllergy.emit(allergy);
   }
 
 }

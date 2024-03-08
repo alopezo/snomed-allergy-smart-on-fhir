@@ -94,6 +94,18 @@ export class AllergiesComponent implements OnInit {
     }
   }
 
+  async deleteAllergy(allergy: any) {
+    const client = this.smartClient;
+    try {
+      const data = await client.delete(allergy.resourceType + '/' + allergy.id);
+      console.log('Allergy deleted: ', data);
+      this.allergies = this.allergies.filter((a) => a.id !== allergy.id);
+    } catch (error) {
+      console.error(error);
+      this.handleError("Failed to delete allergy");
+    }
+  }
+
   private handleError(message: string) {
     this._snackBar.openFromComponent(SnackAlertComponent, {
       duration: 3000,
