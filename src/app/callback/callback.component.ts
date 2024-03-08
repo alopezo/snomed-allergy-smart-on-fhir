@@ -19,14 +19,12 @@ export class CallbackComponent implements OnInit {
   ngOnInit() {
     // Access query parameters
     this.route.queryParams.subscribe(params => {
-      console.log('Query Parameters Callback:', params);
       // Here you could look for specific parameters, e.g., `code` for the authorization code
       // Example: console.log('Authorization Code:', params['code']);
     });
 
     // this.authService.handleAuth()
     //   .then(() => {
-        console.log('Authentication successful in callback, single intent');
         // this.router.navigate([''], { queryParamsHandling: 'preserve' });
         FHIR.oauth2.ready().then(function(client) {
                 

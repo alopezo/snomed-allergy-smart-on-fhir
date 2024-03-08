@@ -14,9 +14,10 @@ export class AllergiesComponent implements OnInit {
 
   @ViewChild(AllergiesProblemListComponent) allergiesProblemListComponent!: AllergiesProblemListComponent;
 
+  patientId: string = '';
   conditions: any[] = [];
   allergies: any[] = [];
-  patientId: string = '';
+  medicationRequests: any[] = [];
 
   smartClient: any;
 
@@ -27,8 +28,6 @@ export class AllergiesComponent implements OnInit {
   }
   
   private initFhirClient() {
-    console.log('Initializing FHIR client in allergy component');
-
     FHIR.oauth2.ready().then(client => {
       this.smartClient = client;
       this.patientId = client.patient.id ? client.patient.id : '';
@@ -46,9 +45,8 @@ export class AllergiesComponent implements OnInit {
       });
       
       if (!data.entry || !data.entry.length) {
-          console.log("No conditions found for the selected patient");
+          // console.log("No conditions found for the selected patient");
       } else {
-        console.log('Conditions data: ', data);
         const conditions = data.entry.map((entry: any) => entry.resource);
         conditions.forEach((condition: any) => this.addProblem(condition?.code?.coding[0]));
         this.conditions = conditions;
@@ -66,14 +64,14 @@ export class AllergiesComponent implements OnInit {
         graph: true
       });
       if (!data.entry || !data.entry.length) {
-          console.log("No allergies found for the selected patient");   
+          // console.log("No allergies found for the selected patient");   
       } else {
-        console.log('Allergies data: ', data);
         const allergies = data.entry.map((entry: any) => entry.resource);
         // filter out allergies without patient element
         allergies.forEach((allergy: any) => {
           if (allergy.patient) {
             this.allergies = [...this.allergies, allergy];
+            this.retrieveMedicationRequests();
           } else {
           }
         });
@@ -81,6 +79,26 @@ export class AllergiesComponent implements OnInit {
     } catch (error) {
       console.error(error);
       this.handleError("Failed to load allergies");
+    }
+  }
+
+  async retrieveMedicationRequests() {
+    const client = this.smartClient;
+    try {
+      const data = await client.request("/MedicationRequest?patient=" + client.patient.id, {
+        resolveReferences: [ "medicationReference" ],
+        graph: true
+      });
+      if (!data.entry || !data.entry.length) {
+          // console.log("No medication requests found for the selected patient");
+      } else {
+        const medicationRequests = data.entry.map((entry: any) => entry.resource);
+        this.medicationRequests = medicationRequests;
+        this.checkInteractions();
+      }
+    } catch (error) {
+      console.error(error);
+      this.handleError("Failed to load medication requests");
     }
   }
 
@@ -92,7 +110,6 @@ export class AllergiesComponent implements OnInit {
       //   body: allergy
       // });
       const data = await client.create(allergy);
-      console.log('Allergy posted: ', data);
       this.allergies = [...this.allergies, data];
     } catch (error) {
       console.error(error);
@@ -104,7 +121,6 @@ export class AllergiesComponent implements OnInit {
     const client = this.smartClient;
     try {
       const data = await client.delete(allergy.resourceType + '/' + allergy.id);
-      console.log('Allergy deleted: ', data);
       this.allergies = this.allergies.filter((a) => a.id !== allergy.id);
     } catch (error) {
       console.error(error);
@@ -128,6 +144,10 @@ export class AllergiesComponent implements OnInit {
       data: "Problem list updated",
       panelClass: ['green-snackbar']
     });
+  }
+
+  checkInteractions() {
+    console.log("Medication requests", this.medicationRequests);
   }
 
 }
