@@ -14,6 +14,9 @@ export class AllergiesComponent implements OnInit {
 
   @ViewChild(AllergiesProblemListComponent) allergiesProblemListComponent!: AllergiesProblemListComponent;
 
+  conditions: any[] = [];
+  allergies: any[] = [];
+
   constructor(private _snackBar: MatSnackBar) { }
   
   ngOnInit(): void {
@@ -30,17 +33,20 @@ export class AllergiesComponent implements OnInit {
   }
 
   private async retrieveConditions(client: any) {
+    this.conditions = [];
     try {
       const data = await client.request("/Condition?patient=" + client.patient.id, {
         graph: true
       });
       
       if (!data.entry || !data.entry.length) {
-          throw new Error("No conditions found for the selected patient");
+          console.log("No conditions found for the selected patient");
+      } else {
+        console.log('Conditions data: ', data);
+        const conditions = data.entry.map((entry: any) => entry.resource);
+        conditions.forEach((condition: any) => this.addProblem(condition?.code?.coding[0]));
+        this.conditions = conditions;
       }
-      console.log('Conditions data: ', data);
-      const conditions = data.entry.map((entry: any) => entry.resource);
-      conditions.forEach((condition: any) => this.addProblem(condition?.code?.coding[0]));
     } catch (error) {
       console.error(error);
       this.handleError("Failed to load conditions");
@@ -48,17 +54,18 @@ export class AllergiesComponent implements OnInit {
   }
 
   private async retrieveAllergies(client: any) {
+    this.allergies = [];
     try {
       const data = await client.request("/AllergyIntolerance?patient=" + client.patient.id, {
         graph: true
       });
-      console.log('Allergies data: ', data);
       if (!data.entry || !data.entry.length) {
-          console.log("No allergies found for the selected patient");
+          console.log("No allergies found for the selected patient");   
+      } else {
+        console.log('Allergies data: ', data);
+        const allergies = data.entry.map((entry: any) => entry.resource);
+        this.allergies = allergies;
       }
-      
-      const allergies = data.entry.map((entry: any) => entry.resource);
-      // allergies.forEach((allergy: any) => this.addProblem(allergy));
     } catch (error) {
       console.error(error);
       this.handleError("Failed to load allergies");

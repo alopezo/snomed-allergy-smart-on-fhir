@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { HighlightJsDirective } from 'ngx-highlight-js';
 import { TerminologyService } from '../../services/terminology.service';
 import { lastValueFrom, map, take } from 'rxjs';
@@ -7,21 +7,22 @@ import { saveAs } from 'file-saver';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackAlertComponent } from 'src/app/alerts/snack-alert';
-import * as FHIR from 'fhirclient';
-import Client from 'fhirclient/lib/Client';
 import { AuthService } from 'src/app/auth.service';
 import { ActivatedRoute } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-allergies-allergy-list',
   templateUrl: './allergies-allergy-list.component.html',
   styleUrls: ['./allergies-allergy-list.component.css']
 })
-export class AllergiesAllergyListComponent  implements OnInit {
+export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
 
+  @Input() allergies: any[] = [];
   @Output() newProblem = new EventEmitter<any>();
 
-  private fhirClient!: Client | null;
+  displayedColumns: string[] = ['type', 'category', 'allergen', 'clinicalStatus', 'verificationStatus', 'criticality'];
+  dataSource = new MatTableDataSource<any>();
 
   clinicalStatusOptions = [
     { system: "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", code: 'active', display: 'Active' },
@@ -150,63 +151,18 @@ export class AllergiesAllergyListComponent  implements OnInit {
     private _snackBar: MatSnackBar) {
       
 
-      // FHIR.oauth2.ready().then(function(client) {
-                
-      //   // Render the current patient (or any error)
-      //   client.patient.read().then(
-      //       function(pt) {
-      //           console.log('pt', pt);
-      //       },
-      //       function(error) {
-      //           console.error(error.stack);
-      //       }
-      //   );
-        
-      //   // Get MedicationRequests for the selected patient
-      //   client.request("/MedicationRequest?patient=" + client.patient.id, {
-      //       resolveReferences: [ "medicationReference" ],
-      //       graph: true
-      //   })
-        
-      //   // Reject if no MedicationRequests are found
-      //   .then(function(data) {
-      //       if (!data.entry || !data.entry.length) {
-      //           throw new Error("No medications found for the selected patient");
-      //       }
-      //       return data.entry;
-      //   })
-        
+  }
 
-      //   // Render the current patient's medications (or any error)
-      //   .then(
-      //       function(meds) {
-      //           console.log('meds', meds);
-      //       },
-      //       function(error) {
-      //           console.error(error.stack);
-      //       }
-      //   );
-
-      // }).catch(console.error);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['allergies'] && this.allergies) {
+      this.dataSource.data = this.allergies;
     }
+  }
 
   ngOnInit(): void {
     this.updateAllergyStr();
-    // const client = FHIR.client("https://r3.smarthealthit.org");
-    // client.request("Patient").then(console.log).catch(console.error);
-    this.route.queryParams.subscribe(params => {
-      console.log('Query Parameters Allergy:', params);
-      // Here you could look for specific parameters, e.g., `code` for the authorization code
-      // Example: console.log('Authorization Code:', params['code']);
-    });
-    // this.initFhirClient();
-
-    // this.authService.handleAuth().then(() => {
-    //     console.log('Authentication successful');
-    // });
   }
 
-  
 
   onReactionsChange(updatedReactions: any[]) {
     // this.selectedReactions = updatedReactions;

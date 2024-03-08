@@ -1,7 +1,48 @@
 <mat-card id="main-card">
     <div class="row">
         <div class="column">
-            <h4>Allergy Intolerance Form
+            <h4>Allergies</h4>
+            <div>
+                <table mat-table [dataSource]="dataSource">
+              
+                  <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef> Type </th>
+                    <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="category">
+                    <th mat-header-cell *matHeaderCellDef> Category </th>
+                    <td mat-cell *matCellDef="let element"> {{element.category[0]}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="allergen">
+                    <th mat-header-cell *matHeaderCellDef> Substance </th>
+                    <td mat-cell *matCellDef="let element"> {{element.code?.coding[0]?.display}} </td>
+                  </ng-container>
+              
+                  <ng-container matColumnDef="clinicalStatus">
+                    <th mat-header-cell *matHeaderCellDef> Clinical Status </th>
+                    <td mat-cell *matCellDef="let element"> {{element.clinicalStatus?.coding[0]?.display}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="verificationStatus">
+                    <th mat-header-cell *matHeaderCellDef> Verification Status </th>
+                    <td mat-cell *matCellDef="let element"> {{element.verificationStatus?.coding[0]?.display}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="criticality">
+                    <th mat-header-cell *matHeaderCellDef> Criticality </th>
+                    <td mat-cell *matCellDef="let element"> {{element.criticality[0]}} </td>
+                  </ng-container>
+              
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              </div>
+              
+        </div>
+        <div class="column">
+            <h4>Record a new Allergy
                 <button mat-icon-button color="primary" [matMenuTriggerFor]="substancePopoverMenu">
                     <mat-icon>info</mat-icon>
                 </button>
@@ -108,7 +149,7 @@
             <app-allergies-allergy-list-reaction [(ngModel)]="selectedReactions" (ngModelChange)="onReactionsChange($event)" (newManifestation)="newProblem.emit($event)"></app-allergies-allergy-list-reaction> 
             <button mat-flat-button color="accent" (click)="addToProblemsList()">Save</button>
         </div>
-        <div class="column">
+        <!-- <div class="column">
             <h4>AllergyIntolerance HL7 FHIR Resource (<a href="https://hl7.org/FHIR/allergyintolerance.html" target="_blank">link</a>)</h4>
             <div id="output">
                 <div id="save">
@@ -118,6 +159,6 @@
                 <textarea highlight-js [options]="{}" [lang]="'json'" id="output" [innerHTML]="outputAllergyStr" wrap="soft">
                 </textarea>
             </div>
-        </div>
+        </div> -->
       </div>
 </mat-card>
