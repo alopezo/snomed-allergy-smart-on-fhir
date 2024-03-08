@@ -17,6 +17,8 @@ export class AllergiesComponent implements OnInit {
   conditions: any[] = [];
   allergies: any[] = [];
 
+  smartClient: any;
+
   constructor(private _snackBar: MatSnackBar) { }
   
   ngOnInit(): void {
@@ -27,12 +29,14 @@ export class AllergiesComponent implements OnInit {
     console.log('Initializing FHIR client in allergy component');
 
     FHIR.oauth2.ready().then(client => {
-      this.retrieveConditions(client);
+      this.smartClient = client;
+      this.retrieveConditions();
       this.retrieveAllergies(client);
     }).catch(console.error);
   }
 
-  private async retrieveConditions(client: any) {
+  async retrieveConditions() {
+    const client = this.smartClient;
     this.conditions = [];
     try {
       const data = await client.request("/Condition?patient=" + client.patient.id, {
@@ -53,7 +57,7 @@ export class AllergiesComponent implements OnInit {
     }
   }
 
-  private async retrieveAllergies(client: any) {
+  async retrieveAllergies(client: any) {
     this.allergies = [];
     try {
       const data = await client.request("/AllergyIntolerance?patient=" + client.patient.id, {
@@ -69,6 +73,21 @@ export class AllergiesComponent implements OnInit {
     } catch (error) {
       console.error(error);
       this.handleError("Failed to load allergies");
+    }
+  }
+
+  async postAllergy(allergy: any) {
+    const client = this.smartClient;
+    try {
+      const data = await client.request("AllergyIntolerance", {
+        method: "POST",
+        body: allergy
+      });
+      console.log('Allergy posted: ', data);
+      this.allergies.push(data);
+    } catch (error) {
+      console.error(error);
+      this.handleError("Failed to post allergy");
     }
   }
 

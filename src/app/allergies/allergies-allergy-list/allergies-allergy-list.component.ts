@@ -20,6 +20,7 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
 
   @Input() allergies: any[] = [];
   @Output() newProblem = new EventEmitter<any>();
+  @Output() newAllergy = new EventEmitter<any>();
 
   displayedColumns: string[] = ['type', 'category', 'allergen', 'clinicalStatus', 'verificationStatus', 'criticality'];
   dataSource = new MatTableDataSource<any>();
@@ -353,6 +354,10 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
       });
     }
     this.clear();
+  }
+
+  saveToSmartServer() {
+    this.newAllergy.emit(this.outputAllergy);
   }
 
 }
