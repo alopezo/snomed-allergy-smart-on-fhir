@@ -209,6 +209,7 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
     this.outputAllergy.verificationStatus.coding = [this.selectedVerificationStatus];
     this.outputAllergy.type = (this.selectedIntoleranceType) ? this.selectedIntoleranceType.fhirCode : '';
     this.outputAllergy.category = (this.selectedIntoleranceCategories.length) ? this.selectedIntoleranceCategories.map((option: any) => option.display) : [];
+    this.outputAllergy.category = this.outputAllergy.category.lowercase();
     this.outputAllergy.criticality = (this.selectedCriticality?.code) ? [this.selectedCriticality.code] : {};
     this.outputAllergy.reaction = [];
     this.selectedReactions.forEach((reaction: any) => {
