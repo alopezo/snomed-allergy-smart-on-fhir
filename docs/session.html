@@ -31,50 +31,49 @@
         <button id="redirectButton">Go to Callback</button> -->
         <script type="text/javascript">
             var queryParams = window.location.search;
-            window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
-            // FHIR.oauth2.ready().then(function(client) {
+            FHIR.oauth2.ready().then(function(client) {
                 
-            //     // Render the current patient (or any error)
-            //     client.patient.read().then(
-            //         // function(pt) {
-            //         //     document.getElementById("patient").innerText = JSON.stringify(pt, null, 4);
-            //         // },
-            //         // function(error) {
-            //         //     document.getElementById("patient").innerText = error.stack;
-            //         // }
-            //     );
+                // Render the current patient (or any error)
+                client.patient.read().then(
+                    // function(pt) {
+                    //     document.getElementById("patient").innerText = JSON.stringify(pt, null, 4);
+                    // },
+                    // function(error) {
+                    //     document.getElementById("patient").innerText = error.stack;
+                    // }
+                );
                 
-            //     // Get MedicationRequests for the selected patient
-            //     client.request("/MedicationRequest?patient=" + client.patient.id, {
-            //         resolveReferences: [ "medicationReference" ],
-            //         graph: true
-            //     })
+                // Get MedicationRequests for the selected patient
+                client.request("/MedicationRequest?patient=" + client.patient.id, {
+                    resolveReferences: [ "medicationReference" ],
+                    graph: true
+                })
                 
-            //     // Reject if no MedicationRequests are found
-            //     .then(function(data) {
-            //         if (!data.entry || !data.entry.length) {
-            //             throw new Error("No medications found for the selected patient");
-            //         }
-            //         return data.entry;
-            //     })
+                // Reject if no MedicationRequests are found
+                .then(function(data) {
+                    if (!data.entry || !data.entry.length) {
+                        throw new Error("No medications found for the selected patient");
+                    }
+                    return data.entry;
+                })
                 
-            //     // Render the current patient's medications (or any error)
-            //     .then(
-            //         function(meds) {
-            //             // document.getElementById("meds").innerText = JSON.stringify(meds, null, 4);
-            //             window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
-            //         },
-            //         function(error) {
-            //             // document.getElementById("meds").innerText = error.stack;
-            //         }
-            //     );
+                // Render the current patient's medications (or any error)
+                .then(
+                    function(meds) {
+                        // document.getElementById("meds").innerText = JSON.stringify(meds, null, 4);
+                        window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
+                    },
+                    function(error) {
+                        // document.getElementById("meds").innerText = error.stack;
+                    }
+                );
 
-            //     // document.getElementById("redirectButton").addEventListener("click", function() {
-            //     //     var queryParams = window.location.search;
-            //     //     window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
-            //     // });
+                // document.getElementById("redirectButton").addEventListener("click", function() {
+                //     var queryParams = window.location.search;
+                //     window.location.href = "/snomed-allergy-smart-on-fhir/#/allergies" + queryParams;
+                // });
 
-            // }).catch(console.error);
+            }).catch(console.error);
         </script>
     </body>
 </html>
