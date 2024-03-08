@@ -73,7 +73,7 @@ export class AllergiesComponent implements OnInit {
         // filter out allergies without patient element
         allergies.forEach((allergy: any) => {
           if (allergy.patient) {
-            this.allergies.push(allergy);
+            this.allergies = [...this.allergies, allergy];
           } else {
           }
         });
@@ -93,7 +93,7 @@ export class AllergiesComponent implements OnInit {
       // });
       const data = await client.create(allergy);
       console.log('Allergy posted: ', data);
-      this.allergies.push(data);
+      this.allergies = [...this.allergies, data];
     } catch (error) {
       console.error(error);
       this.handleError("Failed to post allergy");
