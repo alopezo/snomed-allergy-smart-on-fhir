@@ -79,10 +79,11 @@ export class AllergiesComponent implements OnInit {
   async postAllergy(allergy: any) {
     const client = this.smartClient;
     try {
-      const data = await client.request("AllergyIntolerance", {
-        method: "POST",
-        body: allergy
-      });
+      // const data = await client.request("AllergyIntolerance", {
+      //   method: "POST",
+      //   body: allergy
+      // });
+      const data = await client.create(allergy);
       console.log('Allergy posted: ', data);
       this.allergies.push(data);
     } catch (error) {
