@@ -16,6 +16,7 @@ export class AllergiesComponent implements OnInit {
 
   conditions: any[] = [];
   allergies: any[] = [];
+  patientId: string = '';
 
   smartClient: any;
 
@@ -30,6 +31,7 @@ export class AllergiesComponent implements OnInit {
 
     FHIR.oauth2.ready().then(client => {
       this.smartClient = client;
+      this.patientId = client.patient.id ? client.patient.id : '';
       this.retrieveConditions();
       this.retrieveAllergies(client);
     }).catch(console.error);

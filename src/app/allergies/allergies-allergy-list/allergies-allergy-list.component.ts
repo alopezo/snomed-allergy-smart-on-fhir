@@ -19,6 +19,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
 
   @Input() allergies: any[] = [];
+  @Input() patientId: string = '';
   @Output() newProblem = new EventEmitter<any>();
   @Output() newAllergy = new EventEmitter<any>();
 
@@ -127,7 +128,7 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
     "patient" : {
       "reference" : "Patient/example"
     },
-    "recordedDate" : "2010-03-01",
+    // "recordedDate" : "2010-03-01",
     "participant" : [{
       "function" : {
         "coding" : [{
@@ -135,10 +136,11 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
           "code" : "author",
           "display" : "Author"
         }]
-      },
-      "actor" : {
-        "reference" : "Practitioner/example"
       }
+      // ,
+      // "actor" : {
+      //   "reference" : "Practitioner/example"
+      // }
     }]
   }
   outputAllergy: any = JSON.parse(JSON.stringify(this.outputAllergyBase));
@@ -205,6 +207,7 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
   }
 
   updateAllergyStr() {
+    this,this.outputAllergy.patient.reference = `Patient/${this.patientId}`;
     this.outputAllergy.clinicalStatus.coding = [this.selectedClinicalStatus];
     this.outputAllergy.verificationStatus.coding = [this.selectedVerificationStatus];
     this.outputAllergy.type = (this.selectedIntoleranceType) ? this.selectedIntoleranceType.fhirCode : '';
