@@ -117,7 +117,8 @@ export class AllergiesProblemListComponent {
         "coding": [
           {
             "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
-            "code": "active"
+            "code": "active",
+            "display": "Active"
           }
         ]
       },
@@ -125,7 +126,8 @@ export class AllergiesProblemListComponent {
         "coding": [
           {
             "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
-            "code": "confirmed"
+            "code": "confirmed",
+            "display": "Confirmed"
           }
         ]
       },

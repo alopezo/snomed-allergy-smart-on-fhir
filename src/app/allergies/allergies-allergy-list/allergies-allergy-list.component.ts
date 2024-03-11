@@ -145,8 +145,9 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
     }]
   }
   outputAllergy: any = JSON.parse(JSON.stringify(this.outputAllergyBase));
-
   outputAllergyStr = '';
+
+  public conditionBasedAllergies = false;
 
   constructor(private terminologyService: TerminologyService, 
     private clipboard: Clipboard, 

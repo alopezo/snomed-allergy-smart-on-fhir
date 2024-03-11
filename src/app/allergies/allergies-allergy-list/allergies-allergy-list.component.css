@@ -95,3 +95,7 @@ pre > code {
 .from-condition {
     font-style: italic;
 }
+
+.from-condition::after {
+    content: "*";
+}

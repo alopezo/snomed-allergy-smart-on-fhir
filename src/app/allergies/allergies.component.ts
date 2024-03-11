@@ -4,6 +4,7 @@ import { SnackAlertComponent } from '../alerts/snack-alert';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as FHIR from 'fhirclient';
 import { RxNormService } from '../services/rx-norm.service';
+import { AllergiesAllergyListComponent } from './allergies-allergy-list/allergies-allergy-list.component';
 
 @Component({
   selector: 'app-allergies',
@@ -14,6 +15,7 @@ import { RxNormService } from '../services/rx-norm.service';
 export class AllergiesComponent implements OnInit {
 
   @ViewChild(AllergiesProblemListComponent) allergiesProblemListComponent!: AllergiesProblemListComponent;
+  @ViewChild(AllergiesAllergyListComponent) allergiesListComponent!: AllergiesAllergyListComponent;
 
   patientId: string = '';
   conditions: any[] = [];
@@ -85,6 +87,7 @@ export class AllergiesComponent implements OnInit {
 
   addAllergy(allergy: any) {
     this.allergies = [...this.allergies, allergy];
+    this.allergiesListComponent.conditionBasedAllergies = true;
   }
 
   async retrieveMedicationRequests() {
