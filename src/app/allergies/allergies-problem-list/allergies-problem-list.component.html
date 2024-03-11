@@ -41,7 +41,7 @@
                   <app-autocomplete-binding [binding]="problemBinding" [term]="term" (selectionChange)="updateProblem($event)"></app-autocomplete-binding>
               </div>
               <div class="item">
-                  <button mat-flat-button color="primary" (click)="addProblem()">Add problem</button>
+                  <button mat-flat-button color="primary" (click)="addProblem(); postProblem();">Add problem</button>
               </div>
               <div class="item">
                   <mat-spinner diameter="35" *ngIf="loading"></mat-spinner>

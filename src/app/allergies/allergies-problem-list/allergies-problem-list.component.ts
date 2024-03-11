@@ -41,24 +41,6 @@ export class AllergiesProblemListComponent {
       this.loading = true;
       this.term = newProblem.display;
       newProblem.date = new Date();
-
-      // Create new FHIR condition resource and send it to the parent component
-      let newFhirConditionResource = {
-        subject: {
-          reference: "Patient/123"
-        },
-        code: {
-          coding: [
-            {
-              system: "http://snomed.info/sct",
-              code: newProblem.code,
-              display: newProblem.display
-            }
-          ]
-        }
-      }
-      this.newCondition.emit(newFhirConditionResource);
-      
       // check if new problem code contains the character :
       if (newProblem.code.indexOf(':') > -1) {
         newProblem.allergy = true;
@@ -83,6 +65,25 @@ export class AllergiesProblemListComponent {
       this.term = "";
     }
   }
+
+  postProblem(problem?: any) {
+  let newProblem = problem ? problem : this.selectedProblemSct; 
+  // Create new FHIR condition resource and send it to the parent component
+  let newFhirConditionResource = {
+    subject: {
+      reference: "Patient/123"
+    },
+    code: {
+      coding: [
+        {
+          system: "http://snomed.info/sct",
+          code: newProblem.code,
+          display: newProblem.display
+        }
+      ]
+    }
+}
+this.newCondition.emit(newFhirConditionResource);  }
 
   async addAllergySubstanceToList(allergy: any) {
     const res: any = await this.getAllergySubstance(allergy);
