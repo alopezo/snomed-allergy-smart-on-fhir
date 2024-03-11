@@ -151,16 +151,11 @@ export class AllergiesComponent implements OnInit {
     console.log("Medication requests", this.medicationRequests);
     let medications: any[] = [];
     this.medicationRequests.forEach((medicationRequest: any) => {
-      console.log(medicationRequest.medicationCodeableConcept.coding[0]);
-      if (medicationRequest.medicationCodeableConcept &&
-        medicationRequest.medicationCodeableConcept.coding &&
-        medicationRequest.medicationCodeableConcept.coding[0] &&
-        medicationRequest.medicationCodeableConcept.coding[0].system == 'http: snomed.info/sct') {
+      let system = medicationRequest.medicationCodeableConcept?.coding[0]?.system;
+      console.log("System", system);
+      if (system == 'http://snomed.info/sct') {
           medications.push(medicationRequest.medicationCodeableConcept.coding[0]);
-      } else if (medicationRequest.medicationCodeableConcept &&
-        medicationRequest.medicationCodeableConcept.coding &&
-        medicationRequest.medicationCodeableConcept.coding[0] &&
-        medicationRequest.medicationCodeableConcept.coding[0].system == 'http: www.nlm.nih.gov/research/umls/rxnorm') {
+      } else if (system == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
           // Get Ingredients and SNOMED Codes from rxnav
           console.log("Is RxNorm")
           let rxNavMedication = medicationRequest.medicationCodeableConcept.coding[0];
