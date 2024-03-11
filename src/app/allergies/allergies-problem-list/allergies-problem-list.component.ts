@@ -70,7 +70,7 @@ export class AllergiesProblemListComponent {
     let newProblem = problem ? problem : this.selectedProblemSct; 
     // Create new FHIR condition resource and send it to the parent component
     let newFhirConditionResource = {
-      resource: "Condition",
+      resourceType: "Condition",
       subject: {
         reference: "Patient/123"
       },
@@ -97,7 +97,7 @@ export class AllergiesProblemListComponent {
     });
     // Create new FHIR allergy resource and send it to the parent component (allergy object si a SNOEMD concept)
     let newFhirAllergyIntoleraceResource = {
-      resource: "AllergyIntolerance",
+      resourceType: "AllergyIntolerance",
       patient: {
         reference: "Patient/123"
       },
