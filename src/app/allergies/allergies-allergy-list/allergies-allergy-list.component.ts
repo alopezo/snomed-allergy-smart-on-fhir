@@ -362,7 +362,6 @@ export class AllergiesAllergyListComponent  implements OnInit, OnChanges {
 
   saveToSmartServer() {
     this.newAllergy.emit(this.outputAllergy);
-    this.allergies.push(this.outputAllergy);
   }
 
   deleteAllergyItem(allergy: any) {

@@ -3,6 +3,7 @@ import { AllergiesProblemListComponent } from './allergies-problem-list/allergie
 import { SnackAlertComponent } from '../alerts/snack-alert';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as FHIR from 'fhirclient';
+import { RxNormService } from '../services/rx-norm.service';
 
 @Component({
   selector: 'app-allergies',
@@ -21,7 +22,7 @@ export class AllergiesComponent implements OnInit {
 
   smartClient: any;
 
-  constructor(private _snackBar: MatSnackBar) { }
+  constructor(private _snackBar: MatSnackBar, private rxNormService: RxNormService) { }
   
   ngOnInit(): void {
     this.initFhirClient();
@@ -146,8 +147,40 @@ export class AllergiesComponent implements OnInit {
     });
   }
 
-  checkInteractions() {
+  async checkInteractions() {
     console.log("Medication requests", this.medicationRequests);
+    let medications: any[] = [];
+    this.medicationRequests.forEach((medicationRequest: any) => {
+      if (medicationRequest.medicationCodeableConcept &&
+        medicationRequest.medicationCodeableConcept.coding &&
+        medicationRequest.medicationCodeableConcept.coding[0] &&
+        medicationRequest.medicationCodeableConcept.coding[0].system == 'http: snomed.info/sct') {
+          medications.push(medicationRequest.medicationCodeableConcept.coding[0]);
+      } else if (medicationRequest.medicationCodeableConcept &&
+        medicationRequest.medicationCodeableConcept.coding &&
+        medicationRequest.medicationCodeableConcept.coding[0] &&
+        medicationRequest.medicationCodeableConcept.coding[0].system == 'http: www.nlm.nih.gov/research/umls/rxnorm') {
+          // Get Ingredients and SNOMED Codes from rxnav
+          let rxNavMedication = medicationRequest.medicationCodeableConcept.coding[0];
+          this.rxNormService.getIngredients(rxNavMedication.code).subscribe((data: any) => {
+            if (data.relatedGroup.conceptGroup) {
+              let ingredients = data.relatedGroup.conceptGroup[0].conceptProperties;
+              ingredients.forEach((ingredient: any) => {
+                this.rxNormService.getSNOMEDCode(ingredient.rxcui).subscribe((data: any) => {
+                  let snomedCode = data.propConceptItem.propValue;
+                  medications.push({
+                    code: snomedCode,
+                    display: ingredient.name,
+                    system: 'http: snomed.info/sct'
+                  });
+                  console.log("Medications", medications);
+                });
+              });
+            }
+          }
+        );
+      }
+    });
   }
 
 }
