@@ -67,23 +67,25 @@ export class AllergiesProblemListComponent {
   }
 
   postProblem(problem?: any) {
-  let newProblem = problem ? problem : this.selectedProblemSct; 
-  // Create new FHIR condition resource and send it to the parent component
-  let newFhirConditionResource = {
-    subject: {
-      reference: "Patient/123"
-    },
-    code: {
-      coding: [
-        {
-          system: "http://snomed.info/sct",
-          code: newProblem.code,
-          display: newProblem.display
-        }
-      ]
+    let newProblem = problem ? problem : this.selectedProblemSct; 
+    // Create new FHIR condition resource and send it to the parent component
+    let newFhirConditionResource = {
+      resource: "Condition",
+      subject: {
+        reference: "Patient/123"
+      },
+      code: {
+        coding: [
+            {
+              system: "http://snomed.info/sct",
+              code: newProblem.code,
+              display: newProblem.display
+            }
+          ]
+         }
     }
-}
-this.newCondition.emit(newFhirConditionResource);  }
+    this.newCondition.emit(newFhirConditionResource);  
+  }
 
   async addAllergySubstanceToList(allergy: any) {
     const res: any = await this.getAllergySubstance(allergy);
@@ -95,6 +97,7 @@ this.newCondition.emit(newFhirConditionResource);  }
     });
     // Create new FHIR allergy resource and send it to the parent component (allergy object si a SNOEMD concept)
     let newFhirAllergyIntoleraceResource = {
+      resource: "AllergyIntolerance",
       patient: {
         reference: "Patient/123"
       },
