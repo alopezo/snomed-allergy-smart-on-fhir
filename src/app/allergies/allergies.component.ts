@@ -151,6 +151,7 @@ export class AllergiesComponent implements OnInit {
     console.log("Medication requests", this.medicationRequests);
     let medications: any[] = [];
     this.medicationRequests.forEach((medicationRequest: any) => {
+      console.log(medicationRequest.medicationCodeableConcept.coding[0]);
       if (medicationRequest.medicationCodeableConcept &&
         medicationRequest.medicationCodeableConcept.coding &&
         medicationRequest.medicationCodeableConcept.coding[0] &&
@@ -161,6 +162,7 @@ export class AllergiesComponent implements OnInit {
         medicationRequest.medicationCodeableConcept.coding[0] &&
         medicationRequest.medicationCodeableConcept.coding[0].system == 'http: www.nlm.nih.gov/research/umls/rxnorm') {
           // Get Ingredients and SNOMED Codes from rxnav
+          console.log("Is RxNorm")
           let rxNavMedication = medicationRequest.medicationCodeableConcept.coding[0];
           this.rxNormService.getIngredients(rxNavMedication.code).subscribe((data: any) => {
             if (data.relatedGroup.conceptGroup) {
