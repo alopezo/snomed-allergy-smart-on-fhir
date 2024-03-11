@@ -78,7 +78,7 @@ export class AllergiesComponent implements OnInit {
           if (allergy.patient) {
             this.allergies = [...this.allergies, allergy];
             let allergyCode = allergy.code.coding[0];
-            this.terminologyService.expandValueSet(`<< ${allergy.code} |${allergy.display}| AND 
+            this.terminologyService.expandValueSet(`<< ${allergyCode.code} |${allergyCode.display}| AND 
             (404684003 |Clinical finding (finding)| OR 105590001 |Substance (substance)| OR 373873005 |Pharmaceutical / biologic product (product)|)`, '').subscribe((data: any) => {
               if (data.expansion.contains.length > 0) {
                 let ancestor = data.expansion.contains[0];
