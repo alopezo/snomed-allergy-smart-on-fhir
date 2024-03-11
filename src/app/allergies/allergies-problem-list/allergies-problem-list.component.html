@@ -66,6 +66,7 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
+            <p *ngIf="allergyListBasedConditions" class="mt-4"><i>* Recorded in the allergies list</i></p>
         </div>
         <div class="problem-list">
             <h4>Substances the patient is allergic to:</h4>

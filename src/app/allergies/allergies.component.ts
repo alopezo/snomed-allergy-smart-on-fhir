@@ -85,6 +85,7 @@ export class AllergiesComponent implements OnInit {
                 if (ancestor.code == "404684003") {
                   // Is a clinical finding
                   this.allergiesProblemListComponent.addProblem(allergyCode, false);
+                  this.allergiesProblemListComponent.allergyListBasedConditions = true;
                 } else if (ancestor.code == "105590001") {
                   // Is a substance
                 } else if (ancestor.code == "373873005") {

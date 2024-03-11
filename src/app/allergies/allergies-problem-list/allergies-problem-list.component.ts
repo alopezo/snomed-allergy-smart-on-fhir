@@ -29,6 +29,8 @@ export class AllergiesProblemListComponent {
   dataToDisplay2 = [...ELEMENT_DATA2];
   dataSource2 = new ExampleDataSource2(this.dataToDisplay2);
 
+  public allergyListBasedConditions = true;
+
   constructor(private terminologyService: TerminologyService) { }
 
   async updateProblem(event: any) {

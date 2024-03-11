@@ -65,3 +65,11 @@ td {
     font-weight: lighter;
     font-size: 0.9rem;
 }
+
+.from-allergy {
+    font-style: italic;
+}
+
+.from-allergy::after {
+    content: "*";
+}
