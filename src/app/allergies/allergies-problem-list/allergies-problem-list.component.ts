@@ -53,8 +53,9 @@ export class AllergiesProblemListComponent {
         const allergyQueryResult: any = await this.getAllergyData(newProblem);
         if (allergyQueryResult?.expansion?.contains?.length > 0) {
           newProblem.allergy = true;
+          this.addAllergySubstanceToList(newProblem);
           if (addToAlleregyList) {
-            this.addAllergySubstanceToList(newProblem);
+            this.emitNewAllergy(newProblem);
           }
         }
       }
@@ -97,6 +98,9 @@ export class AllergiesProblemListComponent {
         this.dataSource2.setData(this.dataToDisplay2);
       }
     });
+  }
+
+  emitNewAllergy(allergy: any) {
     // Create new FHIR allergy resource and send it to the parent component (allergy object si a SNOEMD concept)
     let newFhirAllergyIntoleraceResource = {
       resourceType: "AllergyIntolerance",
