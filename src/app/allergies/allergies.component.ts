@@ -84,7 +84,7 @@ export class AllergiesComponent implements OnInit {
                 let ancestor = data.expansion.contains[0];
                 if (ancestor.code == "404684003") {
                   // Is a clinical finding
-                  this.allergiesProblemListComponent.addProblem(allergyCode);
+                  this.allergiesProblemListComponent.addProblem(allergyCode, false);
                 } else if (ancestor.code == "105590001") {
                   // Is a substance
                 } else if (ancestor.code == "373873005") {

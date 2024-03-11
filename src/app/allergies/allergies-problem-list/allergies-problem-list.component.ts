@@ -35,7 +35,7 @@ export class AllergiesProblemListComponent {
     this.selectedProblemSct = event;
   }
 
-  async addProblem(problem?: any) {
+  async addProblem(problem?: any, addToAlleregyList: boolean = true) {
     if (this.selectedProblemSct || problem) {
       let newProblem = problem ? problem : this.selectedProblemSct; 
       this.loading = true;
@@ -53,7 +53,9 @@ export class AllergiesProblemListComponent {
         const allergyQueryResult: any = await this.getAllergyData(newProblem);
         if (allergyQueryResult?.expansion?.contains?.length > 0) {
           newProblem.allergy = true;
-          this.addAllergySubstanceToList(newProblem);
+          if (addToAlleregyList) {
+            this.addAllergySubstanceToList(newProblem);
+          }
         }
       }
 
