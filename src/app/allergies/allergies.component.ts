@@ -149,12 +149,12 @@ export class AllergiesComponent implements OnInit {
 
   async checkInteractions() {
     console.log("Medication requests", this.medicationRequests);
-    let medications: any[] = [];
+    let ingredients: any[] = [];
     this.medicationRequests.forEach((medicationRequest: any) => {
       let system = medicationRequest.medicationCodeableConcept?.coding[0]?.system;
       console.log("System", system);
       if (system == 'http://snomed.info/sct') {
-          medications.push(medicationRequest.medicationCodeableConcept.coding[0]);
+          ingredients.push(medicationRequest.medicationCodeableConcept.coding[0]);
       } else if (system == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
           // Get Ingredients and SNOMED Codes from rxnav
           console.log("Is RxNorm")
@@ -164,13 +164,15 @@ export class AllergiesComponent implements OnInit {
               let ingredients = data.relatedGroup.conceptGroup[0].conceptProperties;
               ingredients.forEach((ingredient: any) => {
                 this.rxNormService.getSNOMEDCode(ingredient.rxcui).subscribe((data: any) => {
-                  let snomedCode = data.propConceptItem.propValue;
-                  medications.push({
-                    code: snomedCode,
-                    display: ingredient.name,
-                    system: 'http: snomed.info/sct'
-                  });
-                  console.log("Medications", medications);
+                  for (let prop of data.propConceptGroup.propConcept) {
+                    let snomedCode = prop.propValue;
+                    ingredients.push({
+                      code: snomedCode,
+                      display: ingredient.name,
+                      system: 'http://snomed.info/sct'
+                    });
+                  }
+                  console.log("Ingredients", ingredients);
                 });
               });
             }
