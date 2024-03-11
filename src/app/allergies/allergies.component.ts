@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import * as FHIR from 'fhirclient';
 import { RxNormService } from '../services/rx-norm.service';
 import { AllergiesAllergyListComponent } from './allergies-allergy-list/allergies-allergy-list.component';
+import { TerminologyService } from '../services/terminology.service';
 
 @Component({
   selector: 'app-allergies',
@@ -24,7 +25,9 @@ export class AllergiesComponent implements OnInit {
 
   smartClient: any;
 
-  constructor(private _snackBar: MatSnackBar, private rxNormService: RxNormService) { }
+  constructor(private _snackBar: MatSnackBar, 
+    private terminologyService: TerminologyService,
+    private rxNormService: RxNormService) { }
   
   ngOnInit(): void {
     this.initFhirClient();
@@ -74,9 +77,23 @@ export class AllergiesComponent implements OnInit {
         allergies.forEach((allergy: any) => {
           if (allergy.patient) {
             this.allergies = [...this.allergies, allergy];
-          } else {
+            let allergyCode = allergy.code.coding[0];
+            this.terminologyService.expandValueSet(`<< ${allergy.code} |${allergy.display}| AND 
+            (404684003 |Clinical finding (finding)| OR 105590001 |Substance (substance)| OR 373873005 |Pharmaceutical / biologic product (product)|)`, '').subscribe((data: any) => {
+              if (data.expansion.contains.length > 0) {
+                let ancestor = data.expansion.contains[0];
+                if (ancestor.code == "404684003") {
+                  // Is a clinical finding
+                  this.allergiesProblemListComponent.addProblem(allergyCode);
+                } else if (ancestor.code == "105590001") {
+                  // Is a substance
+                } else if (ancestor.code == "373873005") {
+                  // Is a product
+                }
+              }
+            });
           }
-          this.retrieveMedicationRequests();
+          // this.retrieveMedicationRequests();
         });
       }
     } catch (error) {
