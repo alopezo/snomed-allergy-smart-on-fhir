@@ -60,7 +60,7 @@
                   <th mat-header-cell *matHeaderCellDef> Term </th>
                   <td mat-cell *matCellDef="let element">
                     <span class="tag pill" *ngIf="element.allergy">Allergy / Intolerance condition</span>
-                    {{element.display}} 
+                    <span [class.from-allergy]="element.note?.length">{{element.display}}</span> 
                   </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
