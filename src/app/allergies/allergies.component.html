@@ -24,7 +24,7 @@
             (newAllergy)="postAllergy($event)" [allergies]="allergies" [patientId]="patientId"></app-allergies-allergy-list>
         </mat-tab>
         <mat-tab label="Problem List Approach (Condition FHIR resource)">
-            <app-allergies-problem-list (newAllergy)="addAllergy($event)"></app-allergies-problem-list>
+            <app-allergies-problem-list (newAllergy)="addAllergy($event)" (newCondition)="postCondition($event)"></app-allergies-problem-list>
         </mat-tab>
     </mat-tab-group>
 </div>

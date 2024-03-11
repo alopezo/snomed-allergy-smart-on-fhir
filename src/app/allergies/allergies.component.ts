@@ -122,6 +122,19 @@ export class AllergiesComponent implements OnInit {
     }
   }
 
+  async postCondition(condition: any) {
+    const client = this.smartClient;
+    try {
+      condition.subject = {
+        reference: "Patient/" + this.patientId
+      };
+      const data = await client.create(condition);
+    } catch (error) {
+      console.error(error);
+      this.handleError("Failed to post condition");
+    }
+  }
+
   async deleteAllergy(allergy: any) {
     const client = this.smartClient;
     try {

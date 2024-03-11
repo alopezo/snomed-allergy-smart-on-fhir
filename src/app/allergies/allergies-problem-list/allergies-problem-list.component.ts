@@ -15,6 +15,7 @@ const ELEMENT_DATA2: any[] = [];
 export class AllergiesProblemListComponent {
 
   @Output() newAllergy = new EventEmitter<any>();
+  @Output() newCondition = new EventEmitter<any>();
 
   problemBinding = { ecl: '< 404684003 |Clinical finding|', title: 'Search...' };
   eclProblem = '< 404684003 |Clinical finding|';
@@ -40,6 +41,23 @@ export class AllergiesProblemListComponent {
       this.loading = true;
       this.term = newProblem.display;
       newProblem.date = new Date();
+
+      // Create new FHIR condition resource and send it to the parent component
+      let newFhirConditionResource = {
+        subject: {
+          reference: "Patient/123"
+        },
+        code: {
+          coding: [
+            {
+              system: "http://snomed.info/sct",
+              code: newProblem.code,
+              display: newProblem.display
+            }
+          ]
+        }
+      }
+      this.newCondition.emit(newFhirConditionResource);
       
       // check if new problem code contains the character :
       if (newProblem.code.indexOf(':') > -1) {
