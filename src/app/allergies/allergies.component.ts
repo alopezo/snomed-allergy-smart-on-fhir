@@ -72,15 +72,19 @@ export class AllergiesComponent implements OnInit {
         allergies.forEach((allergy: any) => {
           if (allergy.patient) {
             this.allergies = [...this.allergies, allergy];
-            this.retrieveMedicationRequests();
           } else {
           }
+          this.retrieveMedicationRequests();
         });
       }
     } catch (error) {
       console.error(error);
       this.handleError("Failed to load allergies");
     }
+  }
+
+  addAllergy(allergy: any) {
+    this.allergies = [...this.allergies, allergy];
   }
 
   async retrieveMedicationRequests() {
@@ -95,7 +99,7 @@ export class AllergiesComponent implements OnInit {
       } else {
         const medicationRequests = data.entry.map((entry: any) => entry.resource);
         this.medicationRequests = medicationRequests;
-        this.checkInteractions();
+        // this.checkInteractions();
       }
     } catch (error) {
       console.error(error);

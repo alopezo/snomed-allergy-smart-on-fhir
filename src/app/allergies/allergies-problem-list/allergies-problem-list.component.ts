@@ -1,5 +1,5 @@
 import { DataSource } from '@angular/cdk/collections';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ReplaySubject, Observable, lastValueFrom, map } from 'rxjs';
 import { TerminologyService } from '../../services/terminology.service';
 
@@ -13,6 +13,9 @@ const ELEMENT_DATA2: any[] = [];
   styleUrls: ['./allergies-problem-list.component.css']
 })
 export class AllergiesProblemListComponent {
+
+  @Output() newAllergy = new EventEmitter<any>();
+
   problemBinding = { ecl: '< 404684003 |Clinical finding|', title: 'Search...' };
   eclProblem = '< 404684003 |Clinical finding|';
   selectedProblemSct: any;
@@ -71,6 +74,46 @@ export class AllergiesProblemListComponent {
         this.dataSource2.setData(this.dataToDisplay2);
       }
     });
+    // Create new FHIR allergy resource and send it to the parent component (allergy object si a SNOEMD concept)
+    let newFhirAllergyIntoleraceResource = {
+      patient: {
+        reference: "Patient/123"
+      },
+      code: {
+        coding: [
+          {
+            system: "http://snomed.info/sct",
+            code: allergy.code,
+            display: allergy.display
+          }
+        ]
+      },
+      type: "allergy",
+      category: ["medication"],
+      criticality: "unable-to-assess",
+      clinicalStatus: {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+            "code": "active"
+          }
+        ]
+      },
+      verificationStatus: {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+            "code": "confirmed"
+          }
+        ]
+      },
+      note: [
+        {
+          "source": "conditionResource"
+        }
+      ] 
+    }
+    this.newAllergy.emit(newFhirAllergyIntoleraceResource);
   }
 
   async getAllergyData(allergy: any): Promise<any> {
