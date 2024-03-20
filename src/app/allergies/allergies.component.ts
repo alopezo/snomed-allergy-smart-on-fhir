@@ -96,8 +96,8 @@ export class AllergiesComponent implements OnInit {
               }
             });
           }
-          // this.retrieveMedicationRequests();
         });
+        this.retrieveMedicationRequests();
       }
     } catch (error) {
       console.error(error);
