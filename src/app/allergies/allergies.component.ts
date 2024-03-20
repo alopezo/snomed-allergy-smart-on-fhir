@@ -118,7 +118,8 @@ export class AllergiesComponent implements OnInit {
         graph: true
       });
       if (!data.entry || !data.entry.length) {
-          // console.log("No medication requests found for the selected patient");
+          console.log("No medication requests found for the selected patient");
+          console.log(data);
       } else {
         const medicationRequests = data.entry.map((entry: any) => entry.resource);
         this.medicationRequests = medicationRequests;
