@@ -6,6 +6,7 @@ import * as FHIR from 'fhirclient';
 import { RxNormService } from '../services/rx-norm.service';
 import { AllergiesAllergyListComponent } from './allergies-allergy-list/allergies-allergy-list.component';
 import { TerminologyService } from '../services/terminology.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-allergies',
@@ -121,7 +122,7 @@ export class AllergiesComponent implements OnInit {
       } else {
         const medicationRequests = data.entry.map((entry: any) => entry.resource);
         this.medicationRequests = medicationRequests;
-        // this.checkInteractions();
+        this.checkInteractions();
       }
     } catch (error) {
       console.error(error);
@@ -186,39 +187,39 @@ export class AllergiesComponent implements OnInit {
     });
   }
 
-  async checkInteractions() {
-    console.log("Medication requests", this.medicationRequests);
-    let ingredients: any[] = [];
-    this.medicationRequests.forEach((medicationRequest: any) => {
-      let system = medicationRequest.medicationCodeableConcept?.coding[0]?.system;
-      console.log("System", system);
-      if (system == 'http://snomed.info/sct') {
-          ingredients.push(medicationRequest.medicationCodeableConcept.coding[0]);
-      } else if (system == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
-          // Get Ingredients and SNOMED Codes from rxnav
-          console.log("Is RxNorm")
-          let rxNavMedication = medicationRequest.medicationCodeableConcept.coding[0];
-          this.rxNormService.getIngredients(rxNavMedication.code).subscribe((data: any) => {
-            if (data.relatedGroup.conceptGroup) {
-              let ingredients = data.relatedGroup.conceptGroup[0].conceptProperties;
-              ingredients.forEach((ingredient: any) => {
-                this.rxNormService.getSNOMEDCode(ingredient.rxcui).subscribe((data: any) => {
-                  for (let prop of data.propConceptGroup.propConcept) {
-                    let snomedCode = prop.propValue;
-                    ingredients.push({
-                      code: snomedCode,
-                      display: ingredient.name,
-                      system: 'http://snomed.info/sct'
-                    });
-                  }
-                  console.log("Ingredients", ingredients);
-                });
+async checkInteractions() {
+  console.log("Medication requests", this.medicationRequests);
+  let ingredients: any[] = [];
+  const ingredientsPromises = this.medicationRequests.map(async (medicationRequest: any) => {
+    let system = medicationRequest.medicationCodeableConcept?.coding[0]?.system;
+    console.log("System", system);
+    if (system == 'http://snomed.info/sct') {
+        ingredients.push(medicationRequest.medicationCodeableConcept.coding[0]);
+    } else if (system == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
+        console.log("Is RxNorm");
+        let rxNavMedication = medicationRequest.medicationCodeableConcept.coding[0];
+        const data = await firstValueFrom(this.rxNormService.getIngredients(rxNavMedication.code));
+        if (data.relatedGroup.conceptGroup) {
+          let conceptProperties = data.relatedGroup.conceptGroup[0].conceptProperties;
+          for (const ingredient of conceptProperties) {
+            const snomedData = await firstValueFrom(this.rxNormService.getSNOMEDCode(ingredient.rxcui));
+            for (let prop of snomedData.propConceptGroup.propConcept) {
+              let snomedCode = prop.propValue;
+              ingredients.push({
+                code: snomedCode,
+                display: ingredient.name,
+                system: 'http://snomed.info/sct'
               });
             }
           }
-        );
-      }
-    });
-  }
+        }
+    }
+  });
+
+  // Wait for all medication requests to be processed
+  await Promise.all(ingredientsPromises);
+  console.log("Ingredients", ingredients);
+}
+
 
 }
