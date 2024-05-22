@@ -8,9 +8,9 @@
     <body>
         <script>
             FHIR.oauth2.authorize({
-              clientId: "35434869-cfed-470f-b303-f2ad6002c8d1",
-                //   scope: "launch openid fhirUser patient/*.read",
-              scope: "patient/*.* user/*.* condition/*.* launch launch/patient launch/encounter openid fhirUser profile offline_access",
+              clientId: "2860f322-b5ed-405f-bcc7-3b6244d4b6a7",
+                //   scope: "launch openid fhirUser patient/*.read",  user/*.*
+              scope: "patient/*.*  condition/*.* launch launch/patient launch/encounter openid fhirUser profile offline_access",
                 // redirectUri: window.location.origin + "/snomed-allergy-smart-on-fhir/#/callback"
               redirectUri: window.location.origin + "/snomed-allergy-smart-on-fhir/session.html"
             });
